@@ -10,8 +10,8 @@ public class Order : Entity<Guid>
     public Guid? DiscountId { get; set; }
 
     //Guest
-    public string? GuestEmail { get; set; } 
-    public string? GuestPhoneNumber { get; set; }
+    public string? GuestEmail { get; set; } = string.Empty;
+    public string? GuestPhoneNumber { get; set; } = string.Empty;
 
     public string OrderCode { get; set; } = default!;
     public DateTime OrderDate { get; set; }
