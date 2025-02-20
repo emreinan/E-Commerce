@@ -9,7 +9,7 @@ public class RoleConfiguration : BaseEntityConfiguration<Role, Guid>
     {
         base.Configure(builder);
 
-        builder.Property(x => x.Name).IsRequired().HasMaxLength(50);
+        builder.Property(x => x.Name).IsRequired().HasMaxLength(15);
 
         builder.HasIndex(x => x.Name).IsUnique();
     }

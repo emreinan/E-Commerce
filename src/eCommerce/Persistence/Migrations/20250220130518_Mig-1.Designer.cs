@@ -625,7 +625,7 @@ namespace Persistence.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Role", b =>
+            modelBuilder.Entity("Domain.Entities.RoleEnum", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -960,7 +960,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.UserRole", b =>
                 {
-                    b.HasOne("Domain.Entities.Role", "Role")
+                    b.HasOne("Domain.Entities.RoleEnum", "RoleEnum")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -972,7 +972,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Role");
+                    b.Navigation("RoleEnum");
 
                     b.Navigation("User");
                 });
@@ -1003,7 +1003,7 @@ namespace Persistence.Migrations
                     b.Navigation("ProductImages");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Role", b =>
+            modelBuilder.Entity("Domain.Entities.RoleEnum", b =>
                 {
                     b.Navigation("UserRoles");
                 });

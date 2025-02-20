@@ -11,6 +11,7 @@ public class UserConfiguration : BaseEntityConfiguration<User, Guid>
 
         builder.Property(x => x.FirstName).IsRequired().HasMaxLength(50);
         builder.Property(x => x.LastName).IsRequired().HasMaxLength(50);
+        builder.Ignore(x => x.FullName);
         builder.Property(u => u.Email).IsRequired().HasMaxLength(100);
         builder.Property(u => u.PasswordSalt).IsRequired().HasMaxLength(256);
         builder.Property(u => u.PasswordHash).IsRequired().HasMaxLength(256);

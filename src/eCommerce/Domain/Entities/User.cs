@@ -12,6 +12,7 @@ public class User : Entity<Guid>
     public string FullName => $"{FirstName} {LastName}";
     public string Email { get; set; } = default!;
     public string PhoneNumber { get; set; } = default!;
+    public string? VerificationCode { get; set; }
     public bool IsActive { get; set; } 
 
 

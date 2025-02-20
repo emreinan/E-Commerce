@@ -1,5 +1,6 @@
 ﻿
 using Core.Persistence.Domain;
+using Domain.Enums;
 
 namespace Domain.Entities;
 
