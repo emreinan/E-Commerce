@@ -23,5 +23,12 @@ public class UserConfiguration : BaseEntityConfiguration<User, Guid>
 
         builder.HasIndex(x => x.Email).IsUnique();
         builder.HasIndex(x => x.PhoneNumber).IsUnique();
+
+        builder.OwnsOne(x => x.PersonalInfo, personalInfo =>
+        {
+            personalInfo.Property(x => x.TcNo).HasMaxLength(11);
+            personalInfo.Property(x => x.DateOfBirth).HasColumnType("date");
+            personalInfo.Property(x => x.ProfileImageUrl).HasMaxLength(200);
+        });
     }
 }

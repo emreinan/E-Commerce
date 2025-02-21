@@ -22,7 +22,6 @@ public class User : Entity<Guid>
     public virtual ICollection<Order> Orders { get; set; } = default!;
     public virtual ICollection<ProductComment> ProductComments { get; set; } = default!;
     public virtual Basket? Basket { get; set; }
-    [NotMapped]
     public PersonalInfo? PersonalInfo { get; set; }
 }
 
