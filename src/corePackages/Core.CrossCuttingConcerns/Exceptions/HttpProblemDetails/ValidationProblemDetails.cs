@@ -1,8 +1,8 @@
-﻿using AuthenticationAPI.Core.Exceptions.Types;
+﻿using Core.CrossCuttingConcerns.Exceptions.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AuthenticationAPI.Core.Exceptions.HttpProblemDetails;
+namespace Core.CrossCuttingConcerns.Exceptions.HttpProblemDetails;
 
 public class ValidationProblemDetails : ProblemDetails
 {

@@ -1,4 +1,4 @@
-﻿namespace AuthenticationAPI.Core.Exceptions.Types;
+﻿namespace Core.CrossCuttingConcerns.Exceptions.Types;
 
 public class NotFoundException : Exception
 {

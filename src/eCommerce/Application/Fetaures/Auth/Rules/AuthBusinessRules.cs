@@ -1,6 +1,6 @@
 ﻿using Application.Fetaures.Auth.Constants;
 using Application.Services.Repositories;
-using AuthenticationAPI.Core.Exceptions.Types;
+using Core.CrossCuttingConcerns.Exceptions.Types;
 using Core.Application.Security;
 using Domain.Entities;
 

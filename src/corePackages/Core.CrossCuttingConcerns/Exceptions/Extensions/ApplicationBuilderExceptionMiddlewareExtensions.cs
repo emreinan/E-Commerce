@@ -1,7 +1,7 @@
-﻿using AuthenticationAPI.Core.Exceptions.Middleware;
+﻿using Core.CrossCuttingConcerns.Exceptions.Middleware;
 using Microsoft.AspNetCore.Builder;
 
-namespace AuthenticationAPI.Core.Exceptions.Extensions;
+namespace Core.CrossCuttingConcerns.Exceptions.Extensions;
 
 public static class ApplicationBuilderExceptionMiddlewareExtensions
 {

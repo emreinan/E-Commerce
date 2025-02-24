@@ -1,6 +1,6 @@
-﻿using AuthenticationAPI.Core.Exceptions.Types;
+﻿using Core.CrossCuttingConcerns.Exceptions.Types;
 
-namespace AuthenticationAPI.Core.Exceptions.Handlers;
+namespace Core.CrossCuttingConcerns.Exceptions.Handlers;
 
 public abstract class ExceptionHandler
 {
