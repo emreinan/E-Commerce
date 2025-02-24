@@ -11,30 +11,21 @@ namespace Application.Fetaures.Auth.Commands.VerifyEmail;
 
 public class VerifyEmailCommand : IRequest<VerifyEmailResponse>
 {
-    public string Email { get; set; }
-    public string Code { get; set; }
+    public string Email { get; set; } = default!;
+    public string Code { get; set; } = default!;
 
-    internal class VerifyEmailCommandHandler : IRequestHandler<VerifyEmailCommand, VerifyEmailResponse>
+    internal class VerifyEmailCommandHandler(IUserRepository userRepository, AuthBusinessRules authBusinessRules) : IRequestHandler<VerifyEmailCommand, VerifyEmailResponse>
     {
-        private readonly IUserRepository _userRepository;
-        private readonly AuthBusinessRules _authBusinessRules;
-
-        public VerifyEmailCommandHandler(IUserRepository userRepository, AuthBusinessRules authBusinessRules)
-        {
-            _userRepository = userRepository;
-            _authBusinessRules = authBusinessRules;
-        }
-
         public async Task<VerifyEmailResponse> Handle(VerifyEmailCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetAsync(u=>u.Email == request.Email);
+            var user = await userRepository.GetAsync(u=>u.Email == request.Email);
 
-            _authBusinessRules.UserShouldExist(user);
+            authBusinessRules.UserShouldExist(user);
 
-            _authBusinessRules.VerificationCodeShouldBeCorrect(user!, request.Code);
+            authBusinessRules.VerificationCodeShouldBeCorrect(user!, request.Code);
 
             user!.IsActive = true;
-            await _userRepository.UpdateAsync(user);
+            await userRepository.UpdateAsync(user);
 
             return new VerifyEmailResponse
             {

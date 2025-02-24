@@ -1,9 +1,9 @@
-﻿using AuthenticationAPI.Core.Exceptions.Extensions;
-using AuthenticationAPI.Core.Exceptions.HttpProblemDetails;
-using AuthenticationAPI.Core.Exceptions.Types;
+﻿using Core.CrossCuttingConcerns.Exceptions.Extensions;
+using Core.CrossCuttingConcerns.Exceptions.HttpProblemDetails;
+using Core.CrossCuttingConcerns.Exceptions.Types;
 using Microsoft.AspNetCore.Http;
 
-namespace AuthenticationAPI.Core.Exceptions.Handlers;
+namespace Core.CrossCuttingConcerns.Exceptions.Handlers;
 
 public class HttpExceptionHandler : ExceptionHandler
 {

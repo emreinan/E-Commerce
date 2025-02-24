@@ -9,14 +9,14 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(IMediator mediator) : ControllerBase
+    public class AuthController : BaseController
     {
         [HttpPost("Login")]
         public async Task<IActionResult> LoginAsync([FromBody] UserForLoginDto dto)
         {
             string ipAddress = HttpContext.Connection.RemoteIpAddress!.MapToIPv4().ToString();
             LoginCommand command = new() { Login = dto, IpAddress = ipAddress };
-            var response = await mediator.Send(command);
+            var response = await Mediator.Send(command);
             return Ok(response);
         }
 
@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
         {
             string ipAddress = HttpContext.Connection.RemoteIpAddress!.MapToIPv4().ToString();
             RegisterCommand command = new() { Register = dto, IpAddress = ipAddress };
-            var response = await mediator.Send(command);
+            var response = await Mediator.Send(command);
             return Ok(response);
         }
 
@@ -34,14 +34,14 @@ namespace WebAPI.Controllers
         {
             string ipAddress = HttpContext.Connection.RemoteIpAddress!.MapToIPv4().ToString();
             RefreshTokenCommand command = new() { Token = refreshToken, IpAddress = ipAddress };
-            var response = await mediator.Send(command);
+            var response = await Mediator.Send(command);
             return Ok(response);
         }
 
         [HttpGet("VerifyEmail")]
         public async Task<IActionResult> VerifyEmailAsync([FromQuery] VerifyEmailCommand command)
         {
-            var response = await mediator.Send(command);
+            var response = await Mediator.Send(command);
             return Ok(response);
         }
     }

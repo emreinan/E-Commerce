@@ -8,6 +8,6 @@ namespace Application.Fetaures.Auth.Commands.Login;
 
 public class LoggedResponse
 {
-    public string AccessToken { get; set; }
-    public string RefreshToken { get; set; }
+    public string AccessToken { get; set; } = default!;
+    public string RefreshToken { get; set; } = default!;
 }

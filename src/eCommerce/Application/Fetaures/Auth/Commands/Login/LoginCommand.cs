@@ -14,36 +14,25 @@ namespace Application.Fetaures.Auth.Commands.Login
 {
     public class LoginCommand : IRequest<LoggedResponse>
     {
-        public UserForLoginDto Login { get; set; }
-        public string IpAddress { get; set; }
+        public UserForLoginDto Login { get; set; } = default!;
+        public string IpAddress { get; set; } = default!;
 
-        internal class LoginCommandHandler : IRequestHandler<LoginCommand, LoggedResponse>
+        internal class LoginCommandHandler(IUserRepository userRepository, IAuthService authService, AuthBusinessRules authBusinessRules) : IRequestHandler<LoginCommand, LoggedResponse>
         {
-            private readonly IUserRepository _userRepository;
-            private readonly IAuthService _authService;
-            private readonly AuthBusinessRules _authBusinessRules;
-
-            public LoginCommandHandler(IUserRepository userRepository, IAuthService authService, AuthBusinessRules authBusinessRules)
-            {
-                _userRepository = userRepository;
-                _authService = authService;
-                _authBusinessRules = authBusinessRules;
-            }
-
             public async Task<LoggedResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
             {
-                User? user = await _userRepository.GetAsync(predicate: u => u.Email == request.Login.Email);
+                User? user = await userRepository.GetAsync(predicate: u => u.Email == request.Login.Email);
 
                 //business rule 1
-                _authBusinessRules.UserShouldExist(user);
+                authBusinessRules.UserShouldExist(user);
 
                 //business rule 2
-                _authBusinessRules.PasswordShouldMatch(request.Login.Password, user!);
+                authBusinessRules.PasswordShouldMatch(request.Login.Password, user!);
 
-                await _authService.DeleteOldRefreshTokens(user!.Id);
+                await authService.DeleteOldRefreshTokens(user!.Id);
 
-                var accessToken = _authService.CreateAccessToken(user!);
-                var refreshToken = await _authService.CreateRefreshTokenAsync(user!, request.IpAddress);
+                var accessToken = authService.CreateAccessToken(user!);
+                var refreshToken = await authService.CreateRefreshTokenAsync(user!, request.IpAddress);
 
                 return new LoggedResponse
                 {

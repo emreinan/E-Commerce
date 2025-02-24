@@ -622,7 +622,7 @@ namespace Persistence.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("Domain.Entities.RoleEnum", b =>
+            modelBuilder.Entity("Domain.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -637,8 +637,8 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .ValueGeneratedOnUpdate()
@@ -767,6 +767,9 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .ValueGeneratedOnUpdate()
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("VerificationCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -955,9 +958,38 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Entities.User", b =>
+                {
+                    b.OwnsOne("Domain.Entities.PersonalInfo", "PersonalInfo", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<DateTime?>("DateOfBirth")
+                                .HasColumnType("date");
+
+                            b1.Property<string>("ProfileImageUrl")
+                                .HasMaxLength(200)
+                                .HasColumnType("nvarchar(200)");
+
+                            b1.Property<string>("TcNo")
+                                .HasMaxLength(11)
+                                .HasColumnType("nvarchar(11)");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("Users");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
+                    b.Navigation("PersonalInfo");
+                });
+
             modelBuilder.Entity("Domain.Entities.UserRole", b =>
                 {
-                    b.HasOne("Domain.Entities.RoleEnum", "RoleEnum")
+                    b.HasOne("Domain.Entities.Role", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -969,7 +1001,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("RoleEnum");
+                    b.Navigation("Role");
 
                     b.Navigation("User");
                 });
@@ -1000,7 +1032,7 @@ namespace Persistence.Migrations
                     b.Navigation("ProductImages");
                 });
 
-            modelBuilder.Entity("Domain.Entities.RoleEnum", b =>
+            modelBuilder.Entity("Domain.Entities.Role", b =>
                 {
                     b.Navigation("UserRoles");
                 });
