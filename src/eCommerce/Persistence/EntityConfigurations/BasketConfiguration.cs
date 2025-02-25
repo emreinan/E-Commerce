@@ -11,7 +11,6 @@ public class BasketConfiguration : BaseEntityConfiguration<Basket, Guid>
         base.Configure(builder);
 
         builder.Property(x => x.GuestId).HasMaxLength(50);
-        builder.Property(x => x.IsActive).HasDefaultValue(true);
 
         builder.HasOne(x => x.User)
             .WithOne(x => x.Basket)
@@ -21,14 +20,14 @@ public class BasketConfiguration : BaseEntityConfiguration<Basket, Guid>
             .WithMany()
             .HasForeignKey(x => x.DiscountId);
 
-        // Sipariþ tamamlanmadan önce sepet aktif olmalýdýr
-        // Sipariþ tamamlandýðýnda sepet pasif hale gelir
-        builder.HasIndex(x => new { x.UserId, x.IsActive })
-               .HasFilter("[UserId] IS NOT NULL AND IsActive = 1")
-               .IsUnique();
+        //// Sipariþ tamamlanmadan önce sepet aktif olmalýdýr
+        //// Sipariþ tamamlandýðýnda sepet pasif hale gelir
+        //builder.HasIndex(x => new { x.UserId, x.IsActive })
+        //       .HasFilter("[UserId] IS NOT NULL AND IsActive = 1")
+        //       .IsUnique();
 
-        builder.HasIndex(x => new { x.GuestId, x.IsActive })
-               .HasFilter("[GuestId] IS NOT NULL AND IsActive = 1")
-               .IsUnique();
+        //builder.HasIndex(x => new { x.GuestId, x.IsActive })
+        //       .HasFilter("[GuestId] IS NOT NULL AND IsActive = 1")
+        //       .IsUnique();
     }
 }

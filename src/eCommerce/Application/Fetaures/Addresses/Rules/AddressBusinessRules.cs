@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Http;
 
 namespace Application.Fetaures.Addresses.Rules;
 
-public class AddressBusinessRules(IAddressRepository addressRepository, IHttpContextAccessor httpContextAccessor) : BaseBusinessRules
+public class AddressBusinessRules(IAddressRepository addressRepository,
+                                  IHttpContextAccessor httpContextAccessor) : BaseBusinessRules(httpContextAccessor)
 {
 
     public void AddressIsNotNull(Address? address)
@@ -29,27 +30,6 @@ public class AddressBusinessRules(IAddressRepository addressRepository, IHttpCon
 
         if (address is not null)
             throw new BusinessException(AddressesBusinessMessages.AddressTitleMustBeUnique);
-    }
-
-    public string IfUserIdIsNullGetOrCreateGuestId(Guid? userId)
-    {
-        if (userId.HasValue)
-            return string.Empty; // Kullanýcý giriþ yapmýþsa guestId kullanma.
-
-        var guestId = httpContextAccessor.HttpContext?.Request.Cookies["GuestId"];
-
-        if (string.IsNullOrEmpty(guestId))
-        {
-            guestId = Guid.NewGuid().ToString();
-            httpContextAccessor.HttpContext?.Response.Cookies.Append("GuestId", guestId, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                Expires = DateTime.UtcNow.AddDays(7)
-            });
-        }
-
-        return guestId;
     }
 
 }
