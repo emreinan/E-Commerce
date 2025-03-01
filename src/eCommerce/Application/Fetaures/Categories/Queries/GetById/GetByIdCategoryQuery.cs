@@ -1,10 +1,10 @@
-using Application.Features.Categories.Rules;
+using Application.Fetaures.Categories.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
 
-namespace Application.Features.Categories.Queries.GetById;
+namespace Application.Fetaures.Categories.Queries.GetById;
 
 public class GetByIdCategoryQuery : IRequest<GetByIdCategoryResponse>
 {

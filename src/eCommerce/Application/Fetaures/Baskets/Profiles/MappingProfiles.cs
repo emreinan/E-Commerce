@@ -1,11 +1,11 @@
-using Application.Features.Baskets.Commands.Create;
-using Application.Features.Baskets.Commands.Delete;
-using Application.Features.Baskets.Queries.GetById;
-using Application.Features.Baskets.Queries.GetList;
+using Application.Fetaures.Baskets.Commands.Create;
+using Application.Fetaures.Baskets.Commands.Delete;
+using Application.Fetaures.Baskets.Queries.GetById;
+using Application.Fetaures.Baskets.Queries.GetList;
 using AutoMapper;
 using Domain.Entities;
 
-namespace Application.Features.Baskets.Profiles;
+namespace Application.Fetaures.Baskets.Profiles;
 
 public class MappingProfiles : Profile
 {

@@ -1,5 +1,5 @@
 
-namespace Application.Features.Categories.Queries.GetList;
+namespace Application.Fetaures.Categories.Queries.GetList;
 
 public class GetListCategoryListItemDto 
 {

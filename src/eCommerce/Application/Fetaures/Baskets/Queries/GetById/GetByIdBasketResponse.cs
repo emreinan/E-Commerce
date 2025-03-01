@@ -1,5 +1,5 @@
 
-namespace Application.Features.Baskets.Queries.GetById;
+namespace Application.Fetaures.Baskets.Queries.GetById;
 
 public class GetByIdBasketResponse 
 {

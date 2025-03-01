@@ -1,11 +1,11 @@
-using Application.Features.Baskets.Constants;
+using Application.Fetaures.Baskets.Constants;
 using Application.Services.Repositories;
 using Core.Application.Rules;
 using Core.CrossCuttingConcerns.Exceptions.Types;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
-namespace Application.Features.Baskets.Rules;
+namespace Application.Fetaures.Baskets.Rules;
 
 public class BasketBusinessRules(IBasketRepository basketRepository, IHttpContextAccessor httpContextAccessor) : BaseBusinessRules(httpContextAccessor)
 {

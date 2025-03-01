@@ -1,4 +1,4 @@
-namespace Application.Features.Categories.Constants;
+namespace Application.Fetaures.Categories.Constants;
 
 public static class CategoriesBusinessMessages
 {

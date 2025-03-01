@@ -1,5 +1,5 @@
 
-namespace Application.Features.Baskets.Queries.GetList;
+namespace Application.Fetaures.Baskets.Queries.GetList;
 
 public class GetListBasketListItemDto 
 {

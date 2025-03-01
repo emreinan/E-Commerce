@@ -1,5 +1,5 @@
 
-namespace Application.Features.Baskets.Commands.Create;
+namespace Application.Fetaures.Baskets.Commands.Create;
 
 public class CreatedBasketResponse 
 {

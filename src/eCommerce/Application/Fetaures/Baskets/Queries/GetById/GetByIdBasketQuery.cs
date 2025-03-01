@@ -1,10 +1,10 @@
-using Application.Features.Baskets.Rules;
+using Application.Fetaures.Baskets.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
 
-namespace Application.Features.Baskets.Queries.GetById;
+namespace Application.Fetaures.Baskets.Queries.GetById;
 
 public class GetByIdBasketQuery : IRequest<GetByIdBasketResponse>
 {

@@ -3,7 +3,7 @@ using AutoMapper;
 using Domain.Entities;
 using MediatR;
 
-namespace Application.Features.Categories.Queries.GetList;
+namespace Application.Fetaures.Categories.Queries.GetList;
 
 public class GetListCategoryQuery : IRequest<IEnumerable<GetListCategoryListItemDto>>
 {

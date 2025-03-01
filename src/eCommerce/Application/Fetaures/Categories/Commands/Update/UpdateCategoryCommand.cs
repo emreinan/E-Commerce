@@ -1,11 +1,11 @@
-using Application.Features.Categories.Rules;
+using Application.Fetaures.Categories.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
 using Core.Application.Pipelines.Transaction;
 using MediatR;
 
-namespace Application.Features.Categories.Commands.Update;
+namespace Application.Fetaures.Categories.Commands.Update;
 
 public class UpdateCategoryCommand : IRequest<UpdatedCategoryResponse>, ITransactionalRequest
 {

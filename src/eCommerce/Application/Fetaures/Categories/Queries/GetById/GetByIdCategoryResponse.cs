@@ -1,4 +1,4 @@
-namespace Application.Features.Categories.Queries.GetById;
+namespace Application.Fetaures.Categories.Queries.GetById;
 
 public class GetByIdCategoryResponse
 {

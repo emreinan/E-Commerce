@@ -1,11 +1,11 @@
-using Application.Features.Baskets.Rules;
+using Application.Fetaures.Baskets.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Transaction;
 using Domain.Entities;
 using MediatR;
 
-namespace Application.Features.Baskets.Commands.Create;
+namespace Application.Fetaures.Baskets.Commands.Create;
 
 public class CreateBasketCommand : IRequest<CreatedBasketResponse>, ITransactionalRequest
 {

@@ -3,9 +3,9 @@ using Application.Services.Auth;
 using Application.Services.Repositories;
 using MediatR;
 
-using static Application.Features.Auth.Commands.Refresh.RefreshTokenCommand;
+using static Application.Fetaures.Auth.Commands.Refresh.RefreshTokenCommand;
 
-namespace Application.Features.Auth.Commands.Refresh;
+namespace Application.Fetaures.Auth.Commands.Refresh;
 
 public partial class RefreshTokenCommand : IRequest<RefreshedTokenResponse>
 {

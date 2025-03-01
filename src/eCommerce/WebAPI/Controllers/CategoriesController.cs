@@ -1,8 +1,8 @@
-using Application.Features.Categories.Commands.Create;
-using Application.Features.Categories.Commands.Delete;
-using Application.Features.Categories.Commands.Update;
-using Application.Features.Categories.Queries.GetById;
-using Application.Features.Categories.Queries.GetList;
+using Application.Fetaures.Categories.Commands.Create;
+using Application.Fetaures.Categories.Commands.Delete;
+using Application.Fetaures.Categories.Commands.Update;
+using Application.Fetaures.Categories.Queries.GetById;
+using Application.Fetaures.Categories.Queries.GetList;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;

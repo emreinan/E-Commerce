@@ -3,7 +3,7 @@ using AutoMapper;
 using Domain.Entities;
 using MediatR;
 
-namespace Application.Features.Baskets.Queries.GetList;
+namespace Application.Fetaures.Baskets.Queries.GetList;
 
 public class GetListBasketQuery : IRequest<IEnumerable<GetListBasketListItemDto>>
 {

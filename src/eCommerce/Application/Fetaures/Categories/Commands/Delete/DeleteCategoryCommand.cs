@@ -1,11 +1,11 @@
-using Application.Features.Categories.Constants;
-using Application.Features.Categories.Rules;
+using Application.Fetaures.Categories.Constants;
+using Application.Fetaures.Categories.Rules;
 using Application.Services.Repositories;
 using Domain.Entities;
 using Core.Application.Pipelines.Transaction;
 using MediatR;
 
-namespace Application.Features.Categories.Commands.Delete;
+namespace Application.Fetaures.Categories.Commands.Delete;
 
 public class DeleteCategoryCommand : IRequest, ITransactionalRequest
 {

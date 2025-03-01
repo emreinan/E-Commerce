@@ -1,11 +1,11 @@
-using Application.Features.Categories.Constants;
+using Application.Fetaures.Categories.Constants;
 using Application.Services.Repositories;
 using Core.Application.Rules;
 using Core.CrossCuttingConcerns.Exceptions.Types;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
-namespace Application.Features.Categories.Rules;
+namespace Application.Fetaures.Categories.Rules;
 
 public class CategoryBusinessRules(ICategoryRepository categoryRepository, IHttpContextAccessor httpContextAccessor) : BaseBusinessRules(httpContextAccessor)
 {

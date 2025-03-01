@@ -1,4 +1,4 @@
-﻿namespace Application.Features.Auth.Commands.Refresh;
+﻿namespace Application.Fetaures.Auth.Commands.Refresh;
 
 public partial class RefreshTokenCommand
 {

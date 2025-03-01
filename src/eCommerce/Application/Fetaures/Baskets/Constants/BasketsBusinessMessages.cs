@@ -1,4 +1,4 @@
-namespace Application.Features.Baskets.Constants;
+namespace Application.Fetaures.Baskets.Constants;
 
 public static class BasketsBusinessMessages
 {
