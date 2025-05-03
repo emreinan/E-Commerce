@@ -1,10 +1,10 @@
-using Application.Features.ProductComments.Rules;
+using Application.Fetaures.ProductComments.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
 
-namespace Application.Features.ProductComments.Queries.GetById;
+namespace Application.Fetaures.ProductComments.Queries.GetById;
 
 public class GetByIdProductCommentQuery : IRequest<GetByIdProductCommentResponse>
 {

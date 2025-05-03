@@ -1,10 +1,10 @@
-using Application.Features.ProductComments.Rules;
 using Application.Services.Repositories;
 using Domain.Entities;
 using MediatR;
 using Core.Application.Pipelines.Transaction;
+using Application.Fetaures.ProductComments.Rules;
 
-namespace Application.Features.ProductComments.Commands.Delete;
+namespace Application.Fetaures.ProductComments.Commands.Delete;
 
 public class DeleteProductCommentCommand : IRequest, ITransactionalRequest
 {

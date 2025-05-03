@@ -27,8 +27,6 @@ public static class ApplicationServiceRegistrations
         services.AddFluentValidationAutoValidation();
         services.AddValidatorsFromAssembly(Assembly.Load(nameof(Application)));
 
-
-
         return services;
     }
 }

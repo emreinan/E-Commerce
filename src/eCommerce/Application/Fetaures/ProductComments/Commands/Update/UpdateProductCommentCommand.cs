@@ -1,12 +1,11 @@
-using Application.Features.ProductComments.Constants;
-using Application.Features.ProductComments.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
 using Core.Application.Pipelines.Transaction;
+using Application.Fetaures.ProductComments.Rules;
 
-namespace Application.Features.ProductComments.Commands.Update;
+namespace Application.Fetaures.ProductComments.Commands.Update;
 
 public class UpdateProductCommentCommand : IRequest<UpdatedProductCommentResponse>, ITransactionalRequest
 {

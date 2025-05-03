@@ -1,12 +1,12 @@
-using Application.Features.ProductComments.Commands.Create;
-using Application.Features.ProductComments.Commands.Delete;
-using Application.Features.ProductComments.Commands.Update;
-using Application.Features.ProductComments.Queries.GetById;
-using Application.Features.ProductComments.Queries.GetList;
+using Application.Fetaures.ProductComments.Commands.Create;
+using Application.Fetaures.ProductComments.Commands.Delete;
+using Application.Fetaures.ProductComments.Commands.Update;
+using Application.Fetaures.ProductComments.Queries.GetById;
+using Application.Fetaures.ProductComments.Queries.GetList;
 using AutoMapper;
 using Domain.Entities;
 
-namespace Application.Features.ProductComments.Profiles;
+namespace Application.Fetaures.ProductComments.Profiles;
 
 public class MappingProfiles : Profile
 {

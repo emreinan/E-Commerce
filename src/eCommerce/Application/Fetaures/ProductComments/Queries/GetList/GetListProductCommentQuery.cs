@@ -3,7 +3,7 @@ using AutoMapper;
 using Domain.Entities;
 using MediatR;
 
-namespace Application.Features.ProductComments.Queries.GetList;
+namespace Application.Fetaures.ProductComments.Queries.GetList;
 
 public class GetListProductCommentQuery : IRequest<IEnumerable<GetListProductCommentListItemDto>>
 {

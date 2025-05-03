@@ -1,4 +1,4 @@
-namespace Application.Features.ProductComments.Constants;
+namespace Application.Fetaures.ProductComments.Constants;
 
 public static class ProductCommentsBusinessMessages
 {

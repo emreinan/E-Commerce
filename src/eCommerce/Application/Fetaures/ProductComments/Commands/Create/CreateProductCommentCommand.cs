@@ -4,7 +4,7 @@ using Core.Application.Pipelines.Transaction;
 using Domain.Entities;
 using MediatR;
 
-namespace Application.Features.ProductComments.Commands.Create;
+namespace Application.Fetaures.ProductComments.Commands.Create;
 
 public class CreateProductCommentCommand : IRequest<CreatedProductCommentResponse>, ITransactionalRequest
 {

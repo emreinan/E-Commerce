@@ -1,4 +1,4 @@
-namespace Application.Features.ProductComments.Queries.GetList;
+namespace Application.Fetaures.ProductComments.Queries.GetList;
 
 public class GetListProductCommentListItemDto 
 {

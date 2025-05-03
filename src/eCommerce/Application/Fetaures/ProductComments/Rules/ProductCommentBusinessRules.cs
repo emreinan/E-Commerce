@@ -1,11 +1,11 @@
-using Application.Features.ProductComments.Constants;
 using Application.Services.Repositories;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Core.Application.Rules;
 using Core.CrossCuttingConcerns.Exceptions.Types;
+using Application.Fetaures.ProductComments.Constants;
 
-namespace Application.Features.ProductComments.Rules;
+namespace Application.Fetaures.ProductComments.Rules;
 
 public class ProductCommentBusinessRules(IProductCommentRepository productCommentRepository,IHttpContextAccessor httpContextAccessor) : BaseBusinessRules(httpContextAccessor)
 {

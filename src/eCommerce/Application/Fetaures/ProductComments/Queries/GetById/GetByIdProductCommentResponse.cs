@@ -1,4 +1,4 @@
-namespace Application.Features.ProductComments.Queries.GetById;
+namespace Application.Fetaures.ProductComments.Queries.GetById;
 
 public class GetByIdProductCommentResponse 
 {

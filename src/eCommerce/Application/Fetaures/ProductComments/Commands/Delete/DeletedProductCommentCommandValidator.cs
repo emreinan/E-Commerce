@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Application.Features.ProductComments.Commands.Delete;
+namespace Application.Fetaures.ProductComments.Commands.Delete;
 
 public class DeleteProductCommentCommandValidator : AbstractValidator<DeleteProductCommentCommand>
 {

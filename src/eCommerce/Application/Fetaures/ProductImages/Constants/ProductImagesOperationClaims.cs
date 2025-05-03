@@ -1,8 +1,8 @@
-namespace Application.Features.ProductComments.Constants;
+namespace Application.Fetaures.ProductImages.Constants;
 
-public static class ProductCommentsOperationClaims
+public static class ProductImagesOperationClaims
 {
-    private const string _section = "ProductComments";
+    private const string _section = "ProductImages";
 
     public const string Admin = $"{_section}.Admin";
 
