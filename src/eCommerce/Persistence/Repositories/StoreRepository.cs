@@ -5,6 +5,6 @@ using Persistence.Contexts;
 
 namespace Persistence.Repositories;
 
-public class StoreRepository(AppDbContext context) : EfRepositoryBase<User, Guid, AppDbContext>(context), IStoreRepository
+public class StoreRepository(AppDbContext context) : EfRepositoryBase<Store, Guid, AppDbContext>(context), IStoreRepository
 {
 }
