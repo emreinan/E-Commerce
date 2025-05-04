@@ -22,7 +22,7 @@ public class AddressesController : BaseController
     [HttpPut("{id}")]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateAddressRequest request)
     {
-        UpdatedAddressResponse response = await Mediator.Send(new UpdateAddressCommand { Id = id, UpdateAddressRequest = request });
+        UpdatedAddressResponse response = await Mediator.Send(new UpdateAddressCommand { Id = id, Request = request });
         return Ok(response);
     }
 

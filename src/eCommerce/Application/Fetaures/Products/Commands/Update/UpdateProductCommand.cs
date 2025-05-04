@@ -22,7 +22,7 @@ public class UpdateProductCommand : IRequest<UpdatedProductResponse>, ITransacti
 
             await productBusinessRules.ProductNameBeUnique(request.Request.Name, cancellationToken);
 
-            product = mapper.Map(request, product);
+            product = mapper.Map(request.Request, product);
 
             await productRepository.UpdateAsync(product!);
 

@@ -19,7 +19,7 @@ public class UpdateProductImageCommand : IRequest<UpdatedProductImageResponse>, 
         {
             ProductImage? productImage = await productImageRepository.GetAsync(predicate: pi => pi.Id == request.Id, cancellationToken: cancellationToken);
             productImageBusinessRules.ProductImageShouldExistWhenSelected(productImage);
-            productImage = mapper.Map(request, productImage);
+            productImage = mapper.Map(request.Request, productImage);
 
             await productImageRepository.UpdateAsync(productImage!, cancellationToken: cancellationToken);
 

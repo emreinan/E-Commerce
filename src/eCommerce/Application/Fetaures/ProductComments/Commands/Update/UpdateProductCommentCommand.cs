@@ -19,9 +19,9 @@ public class UpdateProductCommentCommand : IRequest<UpdatedProductCommentRespons
         {
             ProductComment? productComment = await productCommentRepository.GetAsync(predicate: pc => pc.Id == request.Id, cancellationToken: cancellationToken);
             productCommentBusinessRules.ProductCommentShouldExistWhenSelected(productComment);
-            productComment = mapper.Map(request, productComment);
+            productComment = mapper.Map(request.Request, productComment);
 
-            await productCommentRepository.UpdateAsync(productComment!, cancellationToken: cancellationToken);
+            await productCommentRepository.UpdateAsync(productComment!, cancellationToken);
 
             UpdatedProductCommentResponse response = mapper.Map<UpdatedProductCommentResponse>(productComment);
             return response;

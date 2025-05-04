@@ -10,7 +10,7 @@ namespace Application.Fetaures.Addresses.Commands.Update;
 public class UpdateAddressCommand : IRequest<UpdatedAddressResponse> , ITransactionalRequest
 {
     public Guid Id { get; set; }
-    public UpdateAddressRequest UpdateAddressRequest { get; set; } = default!;
+    public UpdateAddressRequest Request { get; set; } = default!;
 
     public class UpdateAddressCommandHandler(IMapper mapper, IAddressRepository addressRepository,
                                      AddressBusinessRules addressBusinessRules) : IRequestHandler<UpdateAddressCommand, UpdatedAddressResponse>
@@ -20,12 +20,12 @@ public class UpdateAddressCommand : IRequest<UpdatedAddressResponse> , ITransact
             Address? address = await addressRepository.GetAsync(predicate: a => a.Id == request.Id, cancellationToken: cancellationToken);
             addressBusinessRules.AddressIsNotNull(address);
 
-            var guestId = addressBusinessRules.IfUserIdIsNullGetOrCreateGuestId(request.UpdateAddressRequest.UserId);
-            request.UpdateAddressRequest.GuestId = guestId;
+            var guestId = addressBusinessRules.IfUserIdIsNullGetOrCreateGuestId(request.Request.UserId);
+            request.Request.GuestId = guestId;
 
-            await addressBusinessRules.AddressTitleSholdBeUnique(request.UpdateAddressRequest.UserId, request.UpdateAddressRequest.GuestId, request.UpdateAddressRequest.AddressTitle);
+            await addressBusinessRules.AddressTitleSholdBeUnique(request.Request.UserId, request.Request.GuestId, request.Request.AddressTitle);
 
-            address = mapper.Map(request.UpdateAddressRequest, address);
+            address = mapper.Map(request.Request, address);
 
             await addressRepository.UpdateAsync(address!, cancellationToken: cancellationToken);
 

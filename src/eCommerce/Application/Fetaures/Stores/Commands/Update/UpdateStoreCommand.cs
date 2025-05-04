@@ -19,7 +19,7 @@ public class UpdateStoreCommand : IRequest<UpdatedStoreResponse>, ITransactional
         {
             Store? store = await storeRepository.GetAsync(predicate: s => s.Id == command.Id, cancellationToken: cancellationToken);
             storeBusinessRules.StoreShouldExistWhenSelected(store);
-            store = mapper.Map(command, store);
+            store = mapper.Map(command.Request, store);
 
             await storeRepository.UpdateAsync(store!);
 

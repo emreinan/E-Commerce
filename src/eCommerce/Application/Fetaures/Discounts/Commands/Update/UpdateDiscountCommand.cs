@@ -1,10 +1,9 @@
-using Application.Fetaures.Discounts.Constants;
 using Application.Fetaures.Discounts.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
+using Core.Application.Pipelines.Transaction;
 using Domain.Entities;
 using MediatR;
-using Core.Application.Pipelines.Transaction;
 
 namespace Application.Fetaures.Discounts.Commands.Update;
 
@@ -20,7 +19,7 @@ public class UpdateDiscountCommand : IRequest<UpdatedDiscountResponse>, ITransac
         {
             Discount? discount = await discountRepository.GetAsync(predicate: d => d.Id == request.Id, cancellationToken: cancellationToken);
             discountBusinessRules.DiscountShouldExistWhenSelected(discount);
-            discount = mapper.Map(request, discount);
+            discount = mapper.Map(request.Request, discount);
 
             await discountRepository.UpdateAsync(discount!);
 
