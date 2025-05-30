@@ -19,6 +19,6 @@ public class RefreshTokenConfiguration : BaseEntityConfiguration<RefreshToken, G
 
         builder.HasOne(x => x.User)
             .WithMany(x => x.RefreshTokens)
-            .HasForeignKey(x => x.UserId);
+            .HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.NoAction);
     }
 }

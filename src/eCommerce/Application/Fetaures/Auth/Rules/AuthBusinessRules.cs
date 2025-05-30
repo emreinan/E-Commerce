@@ -3,10 +3,11 @@ using Application.Services.Repositories;
 using Core.CrossCuttingConcerns.Exceptions.Types;
 using Core.Application.Security;
 using Domain.Entities;
+using System.Threading.Tasks;
 
 namespace Application.Fetaures.Auth.Rules;
 
-public class AuthBusinessRules(IUserRepository userRepository)
+public class AuthBusinessRules(IUserRepository userRepository, IRoleRepository roleRepository)
 {
     public void UserShouldExist(User? user)
     {
@@ -48,5 +49,19 @@ public class AuthBusinessRules(IUserRepository userRepository)
     {
         if (user.VerificationCode is null || user.VerificationCode != code)
             throw new BusinessException(ErrorMessages.InvalidVerificationCode);
+    }
+    public async Task<Role> UserRoleIfNotFoundCreate(CancellationToken cancellationToken)
+    {
+        var userRole = await roleRepository.GetAsync(r => r.Name == "User", cancellationToken: cancellationToken);
+
+        if (userRole is null)
+        {
+            userRole = new Role
+            {
+                Name = "User"
+            };
+            await roleRepository.AddAsync(userRole, cancellationToken);
+        }
+        return userRole;
     }
 }

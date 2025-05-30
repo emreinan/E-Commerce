@@ -1,11 +1,6 @@
 ﻿using Application.Fetaures.Auth.Rules;
 using Application.Services.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Fetaures.Auth.Commands.VerifyEmail;
 
@@ -25,7 +20,7 @@ public class VerifyEmailCommand : IRequest<VerifyEmailResponse>
             authBusinessRules.VerificationCodeShouldBeCorrect(user!, request.Code);
 
             user!.IsActive = true;
-            await userRepository.UpdateAsync(user);
+            await userRepository.UpdateAsync(user, cancellationToken);
 
             return new VerifyEmailResponse
             {

@@ -9,7 +9,7 @@ public abstract class BaseEntityConfiguration<T, TId> : IEntityTypeConfiguration
     public virtual void Configure(EntityTypeBuilder<T> builder)
     {
         builder.HasKey(a => a.Id);
-        builder.Property(a => a.CreatedDate).IsRequired().ValueGeneratedOnAdd();
+        builder.Property(a => a.CreatedDate).IsRequired().HasDefaultValueSql("GETUTCDATE()").ValueGeneratedOnAdd();
         builder.Property(a => a.UpdatedDate).IsRequired(false).ValueGeneratedOnUpdate();
         builder.Property(a => a.DeletedDate).IsRequired(false);
         builder.HasQueryFilter(a => !a.DeletedDate.HasValue);

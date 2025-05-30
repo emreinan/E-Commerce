@@ -12,18 +12,16 @@ public class BasketItemConfiguration : BaseEntityConfiguration<BasketItem, Guid>
         builder.Property(bi => bi.BasketId).IsRequired();
         builder.Property(bi => bi.ProductId).IsRequired();
         builder.Property(bi => bi.Quantity).IsRequired().HasDefaultValue(1);
-        builder.Property(bi => bi.Price).IsRequired().HasPrecision(18, 2);
+        builder.Property(bi => bi.UnitPrice).IsRequired().HasPrecision(18, 2);
 
         builder.ToTable(tb => tb.HasCheckConstraint("CHK_BasketItem_Quantity", "[Quantity] >= 1"));
 
         builder.HasOne(bi => bi.Basket)
                .WithMany(b => b.BasketItems)
-               .HasForeignKey(bi => bi.BasketId);
+               .HasForeignKey(bi => bi.BasketId).OnDelete(DeleteBehavior.NoAction);
 
-        builder.HasOne(x => x.Product)
-            .WithMany(x => x.BasketItems)
-            .HasForeignKey(x => x.ProductId);
-
-        builder.HasIndex(x => new { x.BasketId, x.ProductId }).IsUnique();
+        builder.HasIndex(x => new { x.BasketId, x.ProductId })
+            .IsUnique()
+            .HasFilter("[DeletedDate] IS NULL");
     }
 }

@@ -9,8 +9,6 @@ public class    GetListAddressListItemDto
     public string FullName { get; set; } = default!;
     public string Street { get; set; } = default!;
     public string City { get; set; } = default!;
-    public string State { get; set; } = default!;
     public string? ZipCode { get; set; }
-    public string Country { get; set; } = default!;
     public string PhoneNumber { get; set; } = default!;
 }

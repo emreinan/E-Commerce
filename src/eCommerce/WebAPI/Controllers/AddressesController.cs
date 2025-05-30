@@ -22,14 +22,14 @@ public class AddressesController : BaseController
     [HttpPut("{id}")]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateAddressRequest request)
     {
-        UpdatedAddressResponse response = await Mediator.Send(new UpdateAddressCommand { Id = id, UpdateAddressRequest = request });
+        UpdatedAddressResponse response = await Mediator.Send(new UpdateAddressCommand { Id = id, Request = request });
         return Ok(response);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        await Mediator.Send(new DeleteAddressCommand { Id = id });
+        await Mediator.Send(new DeleteAddressCommand (id));
         return NoContent();
     }
 

@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Core.Application.Jwt;
+﻿namespace Core.Application.Jwt;
 
 public class TokenOptions
 {
-    public string Audience { get; set; }
-    public string Issuer { get; set; }
-    public string SecurityKey { get; set; }
+    public string Audience { get; set; } = default!;
+    public string Issuer { get; set; } = default!;
+    public string SecurityKey { get; set; } = default!;
     public int AccessTokenExpiration { get; set; }
     public int RefreshTokenExpiration { get; set; }
 }

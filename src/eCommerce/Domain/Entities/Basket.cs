@@ -10,5 +10,4 @@ public class Basket : Entity<Guid>
 
     public virtual Discount? Discount { get; set; }
     public virtual ICollection<BasketItem> BasketItems { get; set; } = [];
-    public virtual User? User { get; set; }
 }

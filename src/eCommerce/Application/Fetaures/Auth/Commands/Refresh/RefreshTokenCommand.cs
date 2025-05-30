@@ -3,9 +3,9 @@ using Application.Services.Auth;
 using Application.Services.Repositories;
 using MediatR;
 
-using static Application.Features.Auth.Commands.Refresh.RefreshTokenCommand;
+using static Application.Fetaures.Auth.Commands.Refresh.RefreshTokenCommand;
 
-namespace Application.Features.Auth.Commands.Refresh;
+namespace Application.Fetaures.Auth.Commands.Refresh;
 
 public partial class RefreshTokenCommand : IRequest<RefreshedTokenResponse>
 {
@@ -28,7 +28,7 @@ public partial class RefreshTokenCommand : IRequest<RefreshedTokenResponse>
             authBusinessRules.IpAddressShouldMatch(refreshToken!, request.IpAddress);
 
             //4. check if user exists
-            var user = await userRepository.GetAsync(u => u.Id == refreshToken!.UserId);
+            var user = await userRepository.GetAsync(u => u.Id == refreshToken!.UserId, cancellationToken: cancellationToken);
             authBusinessRules.UserShouldExist(user);
 
             await authService.DeleteOldRefreshTokens(user!.Id);

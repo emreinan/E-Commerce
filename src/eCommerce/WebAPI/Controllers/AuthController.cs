@@ -1,4 +1,4 @@
-﻿using Application.Features.Auth.Commands.Refresh;
+﻿using Application.Fetaures.Auth.Commands.Refresh;
 using Application.Fetaures.Auth.Commands.Login;
 using Application.Fetaures.Auth.Commands.Register;
 using Application.Fetaures.Auth.Commands.VerifyEmail;

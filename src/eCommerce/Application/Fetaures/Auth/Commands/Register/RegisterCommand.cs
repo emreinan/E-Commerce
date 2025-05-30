@@ -13,13 +13,15 @@ public class RegisterCommand : IRequest<RegisteredResponse>
     public UserForRegisterDto Register { get; set; } = default!;
     public string IpAddress { get; set; } = default!;
 
-    internal class RegisterCommandHandler(IUserRepository userRepository, IAuthService authService, AuthBusinessRules authBusinessRules, IMediator mediator) : IRequestHandler<RegisterCommand, RegisteredResponse>
+    internal class RegisterCommandHandler(IUserRepository userRepository,IAuthService authService, AuthBusinessRules authBusinessRules, IMediator mediator) : IRequestHandler<RegisterCommand, RegisteredResponse>
     {
         public async Task<RegisteredResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
             await authBusinessRules.EmailShouldBeUnique(request.Register.Email);
 
             HashingHelper.CreatePasswordHash(request.Register.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            var userRole = await authBusinessRules.UserRoleIfNotFoundCreate(cancellationToken);
 
             User newUser = new()
             {
@@ -30,10 +32,19 @@ public class RegisterCommand : IRequest<RegisteredResponse>
                 LastName = request.Register.LastName,
                 PhoneNumber = request.Register.PhoneNumber,
                 IsActive = false,
-                UserRoles = [new() {Role = new Role {Name = "User"}}]
+                UserRoles =
+                [
+                    new UserRole
+                    {
+                        RoleId = userRole.Id,
+                        Role = userRole,
+                        CreatedDate = DateTime.UtcNow,
+                    }
+                ],
+
             };
 
-            await userRepository.AddAsync(newUser);
+            await userRepository.AddAsync(newUser, cancellationToken);
 
             var accessToken = authService.CreateAccessToken(newUser);
             var refreshToken = await authService.CreateRefreshTokenAsync(newUser, request.IpAddress);
@@ -43,7 +54,7 @@ public class RegisterCommand : IRequest<RegisteredResponse>
                 UserId = newUser.Id,
                 Email = newUser.Email,
                 Name = newUser.FirstName
-            });
+            }, cancellationToken);
 
             return new RegisteredResponse
             {

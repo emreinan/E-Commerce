@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.EntityConfigurations;
@@ -11,6 +12,8 @@ public class RoleConfiguration : BaseEntityConfiguration<Role, Guid>
 
         builder.Property(x => x.Name).IsRequired().HasMaxLength(15);
 
-        builder.HasIndex(x => x.Name).IsUnique();
+        builder.HasIndex(x => x.Name)
+            .IsUnique()
+            .HasFilter("[DeletedDate] IS NULL");
     }
 }

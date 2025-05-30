@@ -6,34 +6,45 @@ using Domain.Entities;
 using MediatR;
 
 namespace Application.Fetaures.Addresses.Commands.Create;
-
-public class CreateAddressCommand : IRequest<CreatedAddressResponse>, ITransactionalRequest
+public sealed record CreateAddressCommand(
+     Guid? UserId,
+     string AddressTitle,
+     string? FullName,
+     string PhoneNumber,
+     string Street,
+     string District,
+     string City,
+     string? ZipCode,
+     string AddressDetail
+) : IRequest<CreatedAddressResponse>, ITransactionalRequest
 {
-    public Guid? UserId { get; set; }
-    public string? GuestId { get; set; }
-    public string AddressTitle { get; set; } = default!;
-    public string FullName { get; set; } = default!;
-    public string PhoneNumber { get; set; } = default!;
-    public string City { get; set; } = default!;
-    public string District { get; set; } = default!;
-    public string Street { get; set; } = default!;
-    public string? ZipCode { get; set; }
-    public string AddressDetail { get; set; } = default!;
-
     public class CreateAddressCommandHandler(IMapper mapper, IAddressRepository addressRepository,
                                      AddressBusinessRules addressBusinessRules) : IRequestHandler<CreateAddressCommand, CreatedAddressResponse>
     {
         public async Task<CreatedAddressResponse> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
         {
             var guestId = addressBusinessRules.IfUserIdIsNullGetOrCreateGuestId(request.UserId);
-            request.GuestId = guestId;
-            await addressBusinessRules.AddressTitleSholdBeUnique(request.UserId, request.GuestId ,request.AddressTitle);
 
-            Address address = mapper.Map<Address>(request);
+            string? fullName = request.FullName;
+            if (request.UserId.HasValue)
+            {
+                await addressBusinessRules.AddressTitleShouldBeUnique(request.UserId, null, request.AddressTitle);
+                var name = addressBusinessRules.GetClaimName();
+                var surname = addressBusinessRules.GetClaimSurname();
+                fullName = $"{name} {surname}";
+            }
+            else
+            {
+                await addressBusinessRules.AddressTitleShouldBeUnique(null, guestId, request.AddressTitle);
+            }
 
-            await addressRepository.AddAsync(address);
+            var address = mapper.Map<Address>(request);
+            address.GuestId = request.UserId.HasValue ? null : guestId;
+            address.FullName = fullName!;
 
-            CreatedAddressResponse response = mapper.Map<CreatedAddressResponse>(address);
+            await addressRepository.AddAsync(address, cancellationToken);
+
+            var response = mapper.Map<CreatedAddressResponse>(address);
             return response;
         }
     }

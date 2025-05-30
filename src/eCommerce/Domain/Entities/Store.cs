@@ -13,5 +13,6 @@ public class Store : Entity<Guid>
     public bool IsActive { get; set; }
     public bool IsVerified { get; set; }
 
-    public virtual ICollection<Product> Products { get; set; } = default!;
+    public virtual ICollection<Product> Products { get; set; } = [];
+
 }

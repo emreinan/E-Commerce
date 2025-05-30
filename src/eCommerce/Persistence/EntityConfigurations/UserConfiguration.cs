@@ -11,7 +11,6 @@ public class UserConfiguration : BaseEntityConfiguration<User, Guid>
 
         builder.Property(x => x.FirstName).IsRequired().HasMaxLength(50);
         builder.Property(x => x.LastName).IsRequired().HasMaxLength(50);
-        builder.Ignore(x => x.FullName);
         builder.Property(u => u.Email).IsRequired().HasMaxLength(100);
         builder.Property(u => u.PasswordSalt).IsRequired().HasMaxLength(256);
         builder.Property(u => u.PasswordHash).IsRequired().HasMaxLength(256);
@@ -21,8 +20,14 @@ public class UserConfiguration : BaseEntityConfiguration<User, Guid>
                .WithOne(rt => rt.User)
                .HasForeignKey(rt => rt.UserId).OnDelete(DeleteBehavior.NoAction);
 
-        builder.HasIndex(x => x.Email).IsUnique();
-        builder.HasIndex(x => x.PhoneNumber).IsUnique();
+        builder.HasIndex(x => x.Email)
+            .IsUnique()
+            .HasFilter("[DeletedDate] IS NULL");
+
+        builder.HasIndex(x => x.PhoneNumber)
+            .IsUnique()
+            .HasFilter("[DeletedDate] IS NULL");
+
 
         builder.OwnsOne(x => x.PersonalInfo, personalInfo =>
         {

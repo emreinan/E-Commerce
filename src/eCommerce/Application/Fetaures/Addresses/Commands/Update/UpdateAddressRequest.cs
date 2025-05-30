@@ -1,16 +1,15 @@
 ﻿
 namespace Application.Fetaures.Addresses.Commands.Update;
 
-public class UpdateAddressRequest 
-{
-    public Guid? UserId { get; set; }
-    public string? GuestId { get; set; }
-    public string AddressTitle { get; set; } = default!;
-    public string FullName { get; set; } = default!;
-    public string PhoneNumber { get; set; } = default!;
-    public string City { get; set; } = default!;
-    public string District { get; set; } = default!;
-    public string Street { get; set; } = default!;
-    public string? ZipCode { get; set; }
-    public string AddressDetail { get; set; } = default!;
-}
+public sealed record UpdateAddressRequest
+(
+    Guid? UserId,
+    string AddressTitle,
+    string? FullName,
+    string PhoneNumber,
+    string City,
+    string District,
+    string Street,
+    string? ZipCode,
+    string AddressDetail
+);
