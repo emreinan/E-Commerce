@@ -3,13 +3,13 @@ namespace Application.Fetaures.Stores.Commands.Update;
 
 public class UpdatedStoreResponse 
 {
-    public Guid Id { get; set; }
-    public required string Name { get; set; }
-    public required string Description { get; set; }
-    public required string Email { get; set; }
-    public required string PhoneNumber { get; set; }
-    public required string Address { get; set; }
-    public string? LogoUrl { get; set; }
-    public bool IsActive { get; set; }
-    public bool IsVerified { get; set; }
+    public Guid Id { get; init; }
+    public required string Name { get; init; }
+    public required string Description { get; init; }
+    public required string Email { get; init; }
+    public required string PhoneNumber { get; init; }
+    public required string Address { get; init; }
+    public string? LogoUrl { get; init; }
+    public bool IsActive { get; init; }
+    public bool IsVerified { get; init; }
 }

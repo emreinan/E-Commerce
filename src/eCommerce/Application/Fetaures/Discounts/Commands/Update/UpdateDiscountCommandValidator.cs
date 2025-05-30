@@ -1,3 +1,4 @@
+using Domain.Enums;
 using FluentValidation;
 
 namespace Application.Fetaures.Discounts.Commands.Update;
@@ -6,26 +7,27 @@ public class UpdateDiscountCommandValidator : AbstractValidator<UpdateDiscountRe
 {
     public UpdateDiscountCommandValidator()
     {
-        RuleFor(c => c.Amount)
-            .GreaterThan(0)
-            .When(c => !c.Percentage.HasValue || c.Percentage == 0)
-            .WithMessage("Either Amount or Percentage must be specified.");
+        RuleFor(x => x.Type)
+            .IsInEnum();
 
-        RuleFor(c => c.Percentage)
+        RuleFor(x => x.Value)
             .GreaterThan(0)
+            .WithMessage("Discount value must be greater than 0.");
+
+        RuleFor(x => x.Value)
+            .GreaterThanOrEqualTo(1)
             .LessThanOrEqualTo(100)
-            .When(c => c.Percentage.HasValue)
-            .WithMessage("Percentage must be between 0 and 100.");
+            .When(x => x.Type == DiscountType.Percentage)
+            .WithMessage("Percentage must be between 1 and 100.");
 
-        RuleFor(c => c.MinOrderAmount)
+        RuleFor(x => x.MinOrderAmount)
             .GreaterThan(0);
 
-        RuleFor(c => c.UsageLimit)
-             .Cascade(CascadeMode.Stop)
-             .NotEmpty()
-             .GreaterThanOrEqualTo(0);
+        RuleFor(x => x.UsageLimit)
+            .GreaterThanOrEqualTo(0);
 
-        RuleFor(c => c.EndDate)
-            .NotEmpty();
+        RuleFor(x => x.EndDate)
+            .GreaterThan(DateTime.UtcNow)
+            .WithMessage("End date must be in the future.");
     }
 }

@@ -18,7 +18,7 @@ public class CategoriesController : BaseController
         return CreatedAtAction(nameof(GetById), new { response.Id }, response);
     }
 
-    [HttpPut]
+    [HttpPut("{id}")]
     public async Task<IActionResult> Update([FromRoute] Guid id ,[FromBody] UpdateCategoryRequest request)
     {
         var response = await Mediator.Send(new UpdateCategoryCommand { Id = id, Request = request });

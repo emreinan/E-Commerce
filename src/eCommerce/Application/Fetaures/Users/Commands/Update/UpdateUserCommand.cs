@@ -4,6 +4,7 @@ using AutoMapper;
 using Domain.Entities;
 using MediatR;
 using Core.Application.Security;
+using Application.Services.File;
 
 namespace Application.Fetaures.Users.Commands.Update;
 
@@ -14,6 +15,7 @@ public class UpdateUserCommand : IRequest<UpdatedUserResponse>
 
     public class UpdateUserCommandHandler(IUserRepository userRepository,
                                           IMapper mapper,
+                                          IFileService fileService,
                                           UserBusinessRules userBusinessRules) : IRequestHandler<UpdateUserCommand, UpdatedUserResponse>
     {
         public async Task<UpdatedUserResponse> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
@@ -24,6 +26,13 @@ public class UpdateUserCommand : IRequest<UpdatedUserResponse>
 
             userBusinessRules.UserShouldBeExistsWhenSelected(user);
             await userBusinessRules.UserEmailShouldNotExistsWhenUpdate(user!.Id, user.Email);
+
+            if (request.Request.ProfileImage is not null)
+            {
+                var fileResponse = await fileService.UploadFileAsync(request.Request.ProfileImage);
+                user.PersonalInfo ??= new(); 
+                user.PersonalInfo.ProfileImageUrl = fileResponse.Url;
+            }
 
             user = mapper.Map(request.Request, user);
 

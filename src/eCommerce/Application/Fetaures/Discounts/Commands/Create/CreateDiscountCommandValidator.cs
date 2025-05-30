@@ -1,3 +1,4 @@
+using Domain.Enums;
 using FluentValidation;
 
 namespace Application.Fetaures.Discounts.Commands.Create;
@@ -9,18 +10,22 @@ public class CreateDiscountCommandValidator : AbstractValidator<CreateDiscountCo
         RuleFor(c => c.Code)
             .NotEmpty()
             .MinimumLength(5)
-            .MaximumLength(20);
+            .MaximumLength(20)
+            .Matches("^[a-zA-Z0-9]+$")
+            .WithMessage("Code must contain only letters and numbers.");
 
-        RuleFor(c => c.Amount)
-            .GreaterThan(0)
-            .When(c => !c.Percentage.HasValue || c.Percentage == 0)
-            .WithMessage("Either Amount or Percentage must be specified.");
+        RuleFor(c => c.Type)
+          .IsInEnum();
 
-        RuleFor(c => c.Percentage)
+        RuleFor(c => c.Value)
             .GreaterThan(0)
-            .LessThanOrEqualTo(100)
-            .When(c => c.Percentage.HasValue)
-            .WithMessage("Percentage must be between 0 and 100.");
+            .When(c => c.Type == DiscountType.Amount)
+            .WithMessage("Amount discount value must be greater than 0.");
+
+        RuleFor(c => c.Value)
+            .InclusiveBetween(1, 100)
+            .When(c => c.Type == DiscountType.Percentage)
+            .WithMessage("Percentage must be between 1 and 100.");
 
         RuleFor(c => c.MinOrderAmount)
             .GreaterThan(0);

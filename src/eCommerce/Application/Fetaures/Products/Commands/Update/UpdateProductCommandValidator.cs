@@ -6,16 +6,15 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductRequ
 {
     public UpdateProductCommandValidator()
     {
-        RuleFor(c => c.SellerId).NotEmpty();
+        RuleFor(c => c.StoreId).NotEmpty();
         RuleFor(c => c.CategoryId).NotEmpty();
         RuleFor(c => c.Name)
              .NotEmpty()
              .MaximumLength(200).WithMessage("Product name must be at most 200 characters.");
         RuleFor(c => c.Price)
-            .NotEmpty()
-            .GreaterThan(0).WithMessage("Price must be greater than zero.");
+            .GreaterThan(0).WithMessage("Fiyat sýfýrdan büyük olmalý!");
+
         RuleFor(c => c.StockAmount)
-            .NotEmpty()
-            .GreaterThanOrEqualTo(0).WithMessage("Stock amount cannot be negative.");
+            .GreaterThanOrEqualTo(0).WithMessage("Stok miktarý negatif olamaz!");
     }
 }

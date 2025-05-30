@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace Application.Fetaures.Orders.Rules;
 
-public class OrderBusinessRules(IOrderRepository orderRepository, IHttpContextAccessor httpContextAccessor) : BaseBusinessRules(httpContextAccessor)
+public class OrderBusinessRules(IOrderRepository orderRepository,
+    IDiscountRepository discountRepository,
+    IHttpContextAccessor httpContextAccessor) : BaseBusinessRules(httpContextAccessor)
 {
     public void OrderShouldExistWhenSelected(Order? order)
     {
@@ -24,4 +26,16 @@ public class OrderBusinessRules(IOrderRepository orderRepository, IHttpContextAc
         );
         OrderShouldExistWhenSelected(order);
     }
+    public async Task DiscountShouldBeUsable(Guid? discountId, CancellationToken cancellationToken)
+    {
+        if (discountId is null) return;
+
+        Discount? discount = await discountRepository.GetAsync(
+            d => d.Id == discountId,
+            cancellationToken: cancellationToken);
+
+        if (discount is null || !discount.IsUsable)
+            throw new BusinessException(OrdersBusinessMessages.DiscountIsNotUsable);
+    }
+
 }

@@ -7,7 +7,10 @@ public class CreateAddressCommandValidator : AbstractValidator<CreateAddressComm
     public CreateAddressCommandValidator()
     {
         RuleFor(c => c.AddressTitle).NotEmpty().MaximumLength(50);
-        RuleFor(c => c.FullName).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.FullName)
+            .NotEmpty().WithMessage("Full name is required for guests.")
+            .When(x => x.UserId == null);
+
         RuleFor(c => c.Street).NotEmpty().MaximumLength(200);
         RuleFor(c => c.City).NotEmpty().MaximumLength(100);
         RuleFor(c => c.District).NotEmpty().MaximumLength(100);

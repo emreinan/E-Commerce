@@ -5,7 +5,8 @@ namespace Application.Fetaures.Orders.Queries.GetList;
 public class GetListOrderListItemDto 
 {
     public Guid Id { get; set; }
-    public Guid UserId { get; set; }
+    public Guid? UserId { get; set; }
+    public string? GuestId { get; set; }
     public Guid ShippingAddressId { get; set; }
     public Guid? DiscountId { get; set; }
     public string OrderCode { get; set; } = default!;

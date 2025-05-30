@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.EntityConfigurations;
@@ -16,8 +17,16 @@ public class StoreConfiguration : BaseEntityConfiguration<Store, Guid>
         builder.Property(x => x.Address).IsRequired().HasMaxLength(500);
         builder.Property(x => x.LogoUrl).HasMaxLength(500);
 
-        builder.HasIndex(x => x.Name).IsUnique();
-        builder.HasIndex(x => x.Email).IsUnique();
-        builder.HasIndex(x => x.PhoneNumber).IsUnique();
+        builder.HasIndex(x => x.Name)
+            .IsUnique()
+            .HasFilter("[DeletedDate] IS NULL");
+
+        builder.HasIndex(x => x.Email)
+            .IsUnique()
+            .HasFilter("[DeletedDate] IS NULL");
+
+        builder.HasIndex(x => x.PhoneNumber)
+            .IsUnique()
+            .HasFilter("[DeletedDate] IS NULL");
     }
 }

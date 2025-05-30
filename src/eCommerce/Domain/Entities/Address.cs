@@ -15,6 +15,4 @@ public class Address : Entity<Guid>
     public string? ZipCode { get; set; }
     public string AddressDetail { get; set; } = default!;
     public bool IsDefault { get; set; }
-
-    public virtual User? User { get; set; }
 }

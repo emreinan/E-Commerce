@@ -18,12 +18,14 @@ public class ProductCommentConfiguration : BaseEntityConfiguration<ProductCommen
 
         builder.HasOne(pc => pc.Product)
             .WithMany(p => p.ProductComments)
-            .HasForeignKey(pc => pc.ProductId);
+            .HasForeignKey(pc => pc.ProductId).OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(x => x.User)
             .WithMany(x => x.ProductComments)
-            .HasForeignKey(x => x.UserId);
+            .HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.NoAction);
 
-        builder.HasIndex(x => new { x.ProductId, x.UserId }).IsUnique();
+        builder.HasIndex(x => new { x.ProductId, x.UserId })
+            .IsUnique()
+            .HasFilter("[DeletedDate] IS NULL AND [ProductId] IS NOT NULL");
     }
 }

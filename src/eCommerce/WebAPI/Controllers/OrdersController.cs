@@ -1,6 +1,4 @@
 using Application.Fetaures.Orders.Commands.Create;
-using Application.Fetaures.Orders.Commands.Delete;
-using Application.Fetaures.Orders.Commands.Update;
 using Application.Fetaures.Orders.Queries.GetById;
 using Application.Fetaures.Orders.Queries.GetList;
 using Microsoft.AspNetCore.Mvc;
@@ -16,20 +14,6 @@ public class OrdersController : BaseController
     {
         CreatedOrderResponse response = await Mediator.Send(command);
         return CreatedAtAction(nameof(GetById), new { response.Id }, response);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateOrderRequest request)
-    {
-        UpdatedOrderResponse response = await Mediator.Send(new UpdateOrderCommand { Id = id, Request = request });
-        return Ok(response);
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] Guid id)
-    {
-        await Mediator.Send(new DeleteOrderCommand { Id = id });
-        return NoContent();
     }
 
     [HttpGet("{id}")]

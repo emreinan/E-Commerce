@@ -12,6 +12,9 @@ public class CategoryConfiguration : BaseEntityConfiguration<Category, Guid>
         builder.Property(c => c.Name).IsRequired().HasMaxLength(100);
         builder.Property(c => c.Description).HasMaxLength(200);
 
-        builder.HasIndex(c => c.Name).IsUnique();
+        builder.HasIndex(c => c.Name)
+            .IsUnique()
+            .HasFilter("[DeletedDate] IS NULL");
+
     }
 }

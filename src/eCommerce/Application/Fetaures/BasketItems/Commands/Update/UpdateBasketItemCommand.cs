@@ -1,5 +1,6 @@
 using Application.Fetaures.BasketItems.Rules;
 using Application.Services.Repositories;
+using AutoMapper;
 using Core.Application.Pipelines.Transaction;
 using Domain.Entities;
 using MediatR;
@@ -9,9 +10,9 @@ namespace Application.Fetaures.BasketItems.Commands.Update;
 public class UpdateBasketItemCommand : IRequest<UpdatedBasketItemResponse>, ITransactionalRequest
 {
     public Guid Id { get; set; }
-    public UpdateBasketItemRequest Request { get; set; } = default!;
+    public required UpdateBasketItemRequest Request { get; set; }
 
-    public class UpdateBasketItemCommandHandler( IBasketItemRepository basketItemRepository,
+    public class UpdateBasketItemCommandHandler(IMapper mapper, IBasketItemRepository basketItemRepository,
                                      BasketItemBusinessRules basketItemBusinessRules) : IRequestHandler<UpdateBasketItemCommand, UpdatedBasketItemResponse>
     {
         public async Task<UpdatedBasketItemResponse> Handle(UpdateBasketItemCommand request, CancellationToken cancellationToken)
@@ -22,7 +23,7 @@ public class UpdateBasketItemCommand : IRequest<UpdatedBasketItemResponse>, ITra
             // Sepette böyle bir Sepet Öðesi Var mý Kontrol Et
             basketItemBusinessRules.BasketItemShouldExist(basketItem);
 
-            // Sadece quantity güncellenecek, quantity -1 veya +1 gelecek, bu deðer eklenecek.
+            // Sadece quantity güncellenecek, örnek quantity -1 veya +1 gelecek, bu deðer eklenecek.
             basketItem!.Quantity += request.Request.Quantity;
 
             // Ürün ve Stok Kontrolü
@@ -31,17 +32,10 @@ public class UpdateBasketItemCommand : IRequest<UpdatedBasketItemResponse>, ITra
             // Eðer basketitem 0 olduysa silinecek.
             await basketItemBusinessRules.ReduceOrDeleteBasketItemAsync(basketItem, cancellationToken);
 
-            // Eðer Basket içinde ürün kalmadýysa sepet silinecek.
-            await basketItemBusinessRules.CheckAndDeleteBasketIfEmptyAsync(basketItem.BasketId, cancellationToken);
+            await basketItemRepository.UpdateAsync(basketItem, cancellationToken);
 
-            return new UpdatedBasketItemResponse
-            {
-                Id = basketItem.Id,
-                BasketId = basketItem.BasketId,
-                ProductId = basketItem.ProductId,
-                Quantity = basketItem.Quantity,
-                Price = basketItem.Price
-            };
+            var response = mapper.Map<UpdatedBasketItemResponse>(basketItem);
+            return response;
         }
     }
 }

@@ -1,16 +1,13 @@
 using Application.Fetaures.Addresses.Rules;
 using Application.Services.Repositories;
-using AutoMapper;
 using Core.Application.Pipelines.Transaction;
 using Domain.Entities;
 using MediatR;
 
 namespace Application.Fetaures.Addresses.Commands.Delete;
 
-public class DeleteAddressCommand : IRequest, ITransactionalRequest
+public record DeleteAddressCommand(Guid Id) : IRequest, ITransactionalRequest
 {
-    public Guid Id { get; set; }
-
     public class DeleteAddressCommandHandler(IAddressRepository addressRepository,
                                      AddressBusinessRules addressBusinessRules) : IRequestHandler<DeleteAddressCommand>
     {

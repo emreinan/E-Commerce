@@ -12,9 +12,9 @@ namespace WebAPI.Controllers;
 public class UsersController : BaseController
 {
     [HttpGet("{Id}")]
-    public async Task<IActionResult> GetById([FromRoute] GetByIdUserQuery getByIdUserQuery)
+    public async Task<IActionResult> GetById([FromRoute] Guid Id)
     {
-        GetByIdUserResponse result = await Mediator.Send(getByIdUserQuery);
+        GetByIdUserResponse result = await Mediator.Send(new GetByIdUserQuery { Id = Id });
         return Ok(result);
     }
 
@@ -34,23 +34,23 @@ public class UsersController : BaseController
     }
     // Only Admin can access this endpoint
     [HttpPost]
-    public async Task<IActionResult> Add([FromBody] CreateUserCommand createUserCommand)
+    public async Task<IActionResult> Add([FromForm] CreateUserCommand createUserCommand)
     {
         CreatedUserResponse result = await Mediator.Send(createUserCommand);
         return Created(uri: "", result);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateUserRequest request)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromForm] UpdateUserRequest request)
     {
         UpdatedUserResponse result = await Mediator.Send(new UpdateUserCommand { Id = id, Request = request });
         return Ok(result);
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete([FromBody] DeleteUserCommand deleteUserCommand)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        await Mediator.Send(deleteUserCommand);
+        await Mediator.Send(new DeleteUserCommand {Id = id});
         return NoContent();
     }
 }

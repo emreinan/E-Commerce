@@ -1,27 +1,58 @@
+using Application.Fetaures.ProductImages.Rules;
+using Application.Services.File;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
-using Application.Fetaures.ProductImages.Rules;
-using Core.Application.Pipelines.Transaction;
+using Microsoft.AspNetCore.Http;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Application.Fetaures.ProductImages.Commands.Create;
 
-public class CreateProductImageCommand : IRequest<CreatedProductImageResponse>, ITransactionalRequest
+public record CreateProductImageCommand(
+    Guid ProductId,
+    [property: SwaggerSchema(Description = 
+    "Yüklenecek fotoðraflar. Sýrasý önemlidir: ilk dosya için 0, ikinci dosya için 1 vs.")]
+    List<IFormFile> Files,
+
+    [property: SwaggerSchema(Description = 
+    "Ana fotoðraf olarak seçilecek dosyanýn sýrasý (0, 1, 2). " +
+    "Tek dosya yüklenirse otomatik ana fotoðraf olur.")]
+    int MainImageIndex
+) : IRequest<List<CreatedProductImageResponse>>
 {
-    public required Guid ProductId { get; set; }
-    public required string ImageUrl { get; set; }
-
-    public class CreateProductImageCommandHandler(IMapper mapper, IProductImageRepository productImageRepository) : IRequestHandler<CreateProductImageCommand, CreatedProductImageResponse>
+    public class Handler(
+        IProductImageRepository repository,
+        IFileService fileService,
+        IMapper mapper,
+        ProductImageBusinessRules rules
+    ) : IRequestHandler<CreateProductImageCommand, List<CreatedProductImageResponse>>
     {
-        public async Task<CreatedProductImageResponse> Handle(CreateProductImageCommand request, CancellationToken cancellationToken)
+        public async Task<List<CreatedProductImageResponse>> Handle(CreateProductImageCommand request, CancellationToken cancellationToken)
         {
-            ProductImage productImage = mapper.Map<ProductImage>(request);
+            bool anyNewMain = request.Files.Count > 0 && request.MainImageIndex >= 0;
+            await rules.EnsureSingleMainImageAllowed(request.ProductId, anyNewMain, cancellationToken);
 
-            await productImageRepository.AddAsync(productImage);
+            var responses = new List<CreatedProductImageResponse>();
 
-            CreatedProductImageResponse response = mapper.Map<CreatedProductImageResponse>(productImage);
-            return response;
+            int mainImageIndex = request.Files.Count == 1 ? 0 : request.MainImageIndex;
+            for (int i = 0; i < request.Files.Count; i++)
+            {
+                var file = request.Files[i];
+                var uploaded = await fileService.UploadFileAsync(file);
+
+                var image = new ProductImage
+                {
+                    ProductId = request.ProductId,
+                    ImageUrl = uploaded.Url,
+                    IsMain = i == mainImageIndex,
+                };
+
+                await repository.AddAsync(image, cancellationToken);
+                responses.Add(mapper.Map<CreatedProductImageResponse>(image));
+            }
+
+            return responses;
         }
     }
 }

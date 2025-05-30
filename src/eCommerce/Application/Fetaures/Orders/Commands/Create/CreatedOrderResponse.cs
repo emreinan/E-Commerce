@@ -4,16 +4,17 @@ namespace Application.Fetaures.Orders.Commands.Create;
 
 public class CreatedOrderResponse 
 {
-    public Guid Id { get; set; }
-    public Guid UserId { get; set; }
-    public Guid ShippingAddressId { get; set; }
-    public Guid? DiscountId { get; set; }
-    public string OrderCode { get; set; } = default!;
-    public DateTime OrderDate { get; set; }
-    public decimal TaxAmount { get; set; }
-    public decimal ShippingCost { get; set; }
-    public decimal FinalAmount { get; set; }
-    public OrderStatus Status { get; set; }
-    public bool IsPaid { get; set; }
-    public PaymentMethod PaymentMethod { get; set; }
+    public Guid Id { get; init; }
+    public Guid? UserId { get; init; }
+    public string? GuestId { get; init; }
+    public Guid ShippingAddressId { get; init; }
+    public Guid? DiscountId { get; init; }
+    public string OrderCode { get; init; } = default!;
+    public DateTime OrderDate { get; init; }
+    public decimal TaxAmount { get; init; }
+    public decimal ShippingCost { get; init; }
+    public decimal FinalAmount { get; init; }
+    public OrderStatus Status { get; init; }
+    public bool IsPaid { get; init; }
+    public PaymentMethod PaymentMethod { get; init; }
 }

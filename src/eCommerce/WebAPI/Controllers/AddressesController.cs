@@ -29,7 +29,7 @@ public class AddressesController : BaseController
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        await Mediator.Send(new DeleteAddressCommand { Id = id });
+        await Mediator.Send(new DeleteAddressCommand (id));
         return NoContent();
     }
 

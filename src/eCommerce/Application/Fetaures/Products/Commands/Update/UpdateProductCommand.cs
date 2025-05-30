@@ -20,11 +20,13 @@ public class UpdateProductCommand : IRequest<UpdatedProductResponse>, ITransacti
             Product? product = await productRepository.GetAsync(predicate: p => p.Id == request.Id, cancellationToken: cancellationToken);
             productBusinessRules.ProductShouldExistWhenSelected(product);
 
-            await productBusinessRules.ProductNameBeUnique(request.Request.Name, cancellationToken);
+            await productBusinessRules.StoreShouldExist(request.Request.StoreId, cancellationToken);
+            await productBusinessRules.CategoryShouldExist(request.Request.CategoryId, cancellationToken);
+            await productBusinessRules.ProductNameBeUniqueOnUpdate(request.Request.Name, request.Id, cancellationToken);
 
             product = mapper.Map(request.Request, product);
 
-            await productRepository.UpdateAsync(product!);
+            await productRepository.UpdateAsync(product!, cancellationToken);
 
             UpdatedProductResponse response = mapper.Map<UpdatedProductResponse>(product);
             return response;

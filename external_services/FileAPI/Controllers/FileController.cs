@@ -3,6 +3,7 @@ using FileAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Net.Http.Headers;
 
 namespace FileAPI.Controllers;
@@ -47,17 +48,15 @@ public class FileController : ControllerBase
             UploadedAt = DateTime.UtcNow,
         };
 
-        using (var fileStream = new FileStream(filePath, FileMode.Create))
-        {
-            await file.CopyToAsync(fileStream);
-        }
+        using var fileStream = new FileStream(filePath, FileMode.Create);
+        await file.CopyToAsync(fileStream);
 
         _context.FileRecords.Add(fileRecord);
         await _context.SaveChangesAsync();
 
-        var fileUrl = Url.Action("GetFileByUrl", "File", new { id = fileRecord.Id }, Request.Scheme);
+        var fileUrl = Url.Action(nameof(GetFileByUrl), "File", new { id = fileRecord.Id }, Request.Scheme);
 
-        return Ok(new { id = fileRecord.Id, url = fileUrl });
+        return Ok(new UploadFileResponse(fileRecord.Id, fileUrl!));
     }
 
     [HttpGet("download")]
@@ -65,13 +64,15 @@ public class FileController : ControllerBase
     {
         var fileRecord = await _context.FileRecords.FindAsync(id);
 
-        if (fileRecord == null)
+        if (fileRecord == null || !System.IO.File.Exists(fileRecord.FilePath))
         {
             return NotFound();
         }
 
         var fileStream = new FileStream(fileRecord.FilePath, FileMode.Open, FileAccess.Read);
-        return File(fileStream, "application/octet-stream", fileRecord.FileName);
+        var contentType = GetContentType(fileRecord.FileName);
+
+        return File(fileStream, contentType, fileRecord.OriginalFileName);
     }
 
     [HttpGet("getByUrl")]
@@ -80,31 +81,22 @@ public class FileController : ControllerBase
     {
         var fileRecord = await _context.FileRecords.FindAsync(id);
 
-        if (fileRecord == null)
+        if (fileRecord == null || !System.IO.File.Exists(fileRecord.FilePath))
         {
             return NotFound();
         }
 
-        var mimeType = MimeMapping.GetMimeType(fileRecord.FileExtension);
+        var contentType = GetContentType(fileRecord.FileName);
         var fileStream = new FileStream(fileRecord.FilePath, FileMode.Open, FileAccess.Read);
+
         Response.Headers[HeaderNames.ContentDisposition] = new ContentDispositionHeaderValue("inline").ToString();
-        return File(fileStream, mimeType);
+        return File(fileStream, contentType);
     }
-}
-
-public static class MimeMapping
-{
-    private static readonly Dictionary<string, string> MimeTypes = new Dictionary<string, string>
+    private static string GetContentType(string fileName)
     {
-        { ".jpg", "image/jpeg" },
-        { ".jpeg", "image/jpeg" },
-        { ".png", "image/png" },
-        { ".gif", "image/gif" },
-        { ".bmp", "image/bmp" },
-    };
-
-    public static string GetMimeType(string fileExtension)
-    {
-        return MimeTypes.ContainsKey(fileExtension) ? MimeTypes[fileExtension] : "application/octet-stream";
+        var provider = new FileExtensionContentTypeProvider();
+        return provider.TryGetContentType(fileName, out string? contentType)
+            ? contentType
+            : "application/octet-stream";
     }
 }

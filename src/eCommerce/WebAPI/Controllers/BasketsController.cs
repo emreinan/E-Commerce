@@ -20,7 +20,7 @@ public class BasketsController : BaseController
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        await Mediator.Send(new DeleteBasketCommand { Id = id });
+        await Mediator.Send(new DeleteBasketCommand (id));
         return NoContent();
     }
 

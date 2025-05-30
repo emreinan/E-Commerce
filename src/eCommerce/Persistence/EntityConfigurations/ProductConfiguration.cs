@@ -21,7 +21,10 @@ public class ProductConfiguration : BaseEntityConfiguration<Product, Guid>
         builder.ToTable(tb => tb.HasCheckConstraint("CHK_Product_StockAmount", "[StockAmount] >= 0"));
         builder.ToTable(tb => tb.HasCheckConstraint("CHK_Product_Price", "[Price] > 0"));
 
-        builder.HasIndex(x => new { x.StoreId, x.Name }).IsUnique(); // A store can have only one product with the same name
+        builder.HasIndex(x => new { x.StoreId, x.Name })
+            .IsUnique()
+            .HasFilter("[DeletedDate] IS NULL AND [StoreId] IS NOT NULL");
+        // A store can have only one product with the same name
 
         builder.HasOne(x => x.Store)
             .WithMany(x => x.Products)
@@ -38,9 +41,5 @@ public class ProductConfiguration : BaseEntityConfiguration<Product, Guid>
         builder.HasMany(p => p.ProductComments)
             .WithOne(pc => pc.Product)
             .HasForeignKey(pc => pc.ProductId).OnDelete(DeleteBehavior.NoAction);
-
-        builder.HasMany(p => p.BasketItems)
-            .WithOne(bi => bi.Product)
-            .HasForeignKey(bi => bi.ProductId).OnDelete(DeleteBehavior.NoAction);
     }
 }

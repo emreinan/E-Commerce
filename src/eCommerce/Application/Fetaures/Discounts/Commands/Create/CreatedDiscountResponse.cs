@@ -1,13 +1,15 @@
+using Domain.Enums;
+
 namespace Application.Fetaures.Discounts.Commands.Create;
 
 public class CreatedDiscountResponse 
 {
-    public Guid Id { get; set; }
-    public string Code { get; set; } = default!;
-    public decimal? Amount { get; set; }
-    public decimal? Percentage { get; set; }
-    public decimal MinOrderAmount { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-    public bool IsActive { get; set; }
+    public Guid Id { get; init; }
+    public string Code { get; init; } = default!;
+    public decimal Value { get; init; }
+    public string Type { get; init; } = default!;
+    public decimal MinOrderAmount { get; init; }
+    public DateTime StartDate { get; init; }
+    public DateTime EndDate { get; init; }
+    public bool IsActive { get; init; }
 }

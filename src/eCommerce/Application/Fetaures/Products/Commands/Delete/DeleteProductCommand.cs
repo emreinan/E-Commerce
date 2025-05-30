@@ -3,6 +3,7 @@ using Domain.Entities;
 using MediatR;
 using Application.Fetaures.Products.Rules;
 using Core.Application.Pipelines.Transaction;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Fetaures.Products.Commands.Delete;
 
@@ -15,10 +16,22 @@ public class DeleteProductCommand : IRequest, ITransactionalRequest
     {
         public async Task Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
-            Product? product = await productRepository.GetAsync(predicate: p => p.Id == request.Id, cancellationToken: cancellationToken);
+            Product? product = await productRepository.GetAsync(
+                predicate: p => p.Id == request.Id,
+                include: q => q
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductComments),
+                cancellationToken: cancellationToken);
+
             productBusinessRules.ProductShouldExistWhenSelected(product);
 
-            await productRepository.DeleteAsync(product!);
+            foreach (var image in product!.ProductImages)
+                image.DeletedDate = DateTime.UtcNow;
+
+            foreach (var comment in product.ProductComments)
+                comment.DeletedDate = DateTime.UtcNow;
+
+            await productRepository.DeleteAsync(product!, cancellationToken: cancellationToken);
         }
     }
 }

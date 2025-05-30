@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Core.CrossCuttingConcerns.Exceptions.Types;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -25,7 +26,7 @@ public class BaseController : ControllerBase
     {
         var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
         if (userId is null)
-            throw new InvalidOperationException("User ID cannot be retrieved from request.");
+            throw new AuthorizationException("User ID cannot be retrieved from request.");
 
         return Guid.Parse(userId.Value);
     }

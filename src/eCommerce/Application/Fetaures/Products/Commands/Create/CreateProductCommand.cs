@@ -7,28 +7,33 @@ using Core.Application.Pipelines.Transaction;
 
 namespace Application.Fetaures.Products.Commands.Create;
 
-public class CreateProductCommand : IRequest<CreatedProductResponse>, ITransactionalRequest
+public sealed record CreateProductCommand(
+    Guid StoreId,
+    Guid CategoryId,
+    string Name,
+    decimal Price,
+    string? Details,
+    int StockAmount,
+    bool Enabled
+) : IRequest<CreatedProductResponse>, ITransactionalRequest
 {
-    public required Guid SellerId { get; set; }
-    public required Guid CategoryId { get; set; }
-    public required string Name { get; set; }
-    public required decimal Price { get; set; }
-    public string? Details { get; set; }
-    public required int StockAmount { get; set; }
-    public required bool Enabled { get; set; }
-
-    public class CreateProductCommandHandler(IMapper mapper, IProductRepository productRepository,
-                                     ProductBusinessRules productBusinessRules) : IRequestHandler<CreateProductCommand, CreatedProductResponse>
+    public sealed class Handler(
+        IMapper mapper,
+        IProductRepository productRepository,
+        ProductBusinessRules productBusinessRules
+    ) : IRequestHandler<CreateProductCommand, CreatedProductResponse>
     {
         public async Task<CreatedProductResponse> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
+            await productBusinessRules.StoreShouldExist(request.StoreId, cancellationToken);
+            await productBusinessRules.CategoryShouldExist(request.CategoryId, cancellationToken);
             await productBusinessRules.ProductNameBeUnique(request.Name, cancellationToken);
 
-            Product product = mapper.Map<Product>(request);
+            var product = mapper.Map<Product>(request);
 
-            await productRepository.AddAsync(product);
+            await productRepository.AddAsync(product, cancellationToken);
 
-            CreatedProductResponse response = mapper.Map<CreatedProductResponse>(product);
+            var response = mapper.Map<CreatedProductResponse>(product);
             return response;
         }
     }

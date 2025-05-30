@@ -26,11 +26,13 @@ public class CategoryBusinessRules(ICategoryRepository categoryRepository, IHttp
     }
     public async Task CategoryNameBeUnique(string name, CancellationToken cancellationToken)
     {
+        string normalizedName = name.Trim().ToLowerInvariant();
         Category? category = await categoryRepository.GetAsync(
-            predicate: c => c.Name == name,
+            predicate: c => c.Name.ToLower() == normalizedName,
             cancellationToken: cancellationToken
         );
         if (category is not null)
             throw new BusinessException(CategoriesBusinessMessages.CategoryNameAlreadyExists);
     }
+
 }

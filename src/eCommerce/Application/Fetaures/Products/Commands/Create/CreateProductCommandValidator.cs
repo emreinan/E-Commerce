@@ -6,16 +6,22 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
 {
     public CreateProductCommandValidator()
     {
-        RuleFor(c => c.SellerId).NotEmpty();
+        RuleFor(c => c.StoreId).NotEmpty();
         RuleFor(c => c.CategoryId).NotEmpty();
         RuleFor(c => c.Name)
              .NotEmpty()
              .MaximumLength(200).WithMessage("Product name must be at most 200 characters.");
+        RuleFor(c => c.Details)
+             .MaximumLength(1000).WithMessage("Details must be at most 1000 characters.");
         RuleFor(c => c.Price)
-            .NotEmpty()
-            .GreaterThan(0).WithMessage("Price must be greater than zero.");
+            .GreaterThan(0).WithMessage("Fiyat sýfýrdan büyük olmalý!");
+
         RuleFor(c => c.StockAmount)
-            .NotEmpty()
-            .GreaterThanOrEqualTo(0).WithMessage("Stock amount cannot be negative.");
+            .GreaterThanOrEqualTo(0).WithMessage("Stok miktarý negatif olamaz!");
+
+        RuleFor(c => c.Name)
+           .Matches("^[a-zA-Z0-9ðüþöçÝÐÜÞÖÇ ]*$")
+           .WithMessage("Product name contains invalid characters.");
+
     }
 }

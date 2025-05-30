@@ -1,11 +1,12 @@
-﻿namespace Application.Fetaures.Discounts.Commands.Update;
+﻿using Domain.Enums;
 
-public class UpdateDiscountRequest
-{
-    public decimal? Amount { get; set; }
-    public decimal? Percentage { get; set; }
-    public decimal MinOrderAmount { get; set; }
-    public int UsageLimit { get; set; }
-    public DateTime EndDate { get; set; }
-    public bool IsActive { get; set; }
-}
+namespace Application.Fetaures.Discounts.Commands.Update;
+
+public record UpdateDiscountRequest(
+    decimal Value,
+    DiscountType Type,
+    decimal MinOrderAmount,
+    int UsageLimit,
+    DateTime EndDate,
+    bool IsActive
+);

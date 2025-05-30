@@ -13,15 +13,19 @@ public class MappingProfiles : Profile
     public MappingProfiles()
     {
         CreateMap<CreateBasketItemCommand, BasketItem>(); 
-        CreateMap<BasketItem, CreatedBasketItemResponse>();
+        CreateMap<BasketItem, CreatedBasketItemResponse>()
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.UnitPrice));
 
         CreateMap<UpdateBasketItemRequest, BasketItem>();
-        CreateMap<BasketItem, UpdatedBasketItemResponse>();
+        CreateMap<BasketItem, UpdatedBasketItemResponse>()
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.UnitPrice));
 
         CreateMap<DeleteBasketItemCommand, BasketItem>();
 
-        CreateMap<BasketItem, GetByIdBasketItemResponse>();
+        CreateMap<BasketItem, GetByIdBasketItemResponse>()
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.UnitPrice));
 
-        CreateMap<BasketItem, GetListBasketItemListItemDto>();
+        CreateMap<BasketItem, GetListBasketItemListItemDto>()
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.UnitPrice));
     }
 }

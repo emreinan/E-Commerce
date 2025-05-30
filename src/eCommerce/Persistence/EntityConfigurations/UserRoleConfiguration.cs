@@ -15,11 +15,11 @@ public class UserRoleConfiguration : BaseEntityConfiguration<UserRole, Guid>
 
         builder.HasOne(x => x.User)
             .WithMany(x => x.UserRoles)
-            .HasForeignKey(x => x.UserId);
+            .HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(x => x.Role)
             .WithMany(x => x.UserRoles)
-            .HasForeignKey(x => x.RoleId);
+            .HasForeignKey(x => x.RoleId).OnDelete(DeleteBehavior.NoAction);
 
         builder.HasIndex(x => new { x.UserId, x.RoleId }).IsUnique();
     }

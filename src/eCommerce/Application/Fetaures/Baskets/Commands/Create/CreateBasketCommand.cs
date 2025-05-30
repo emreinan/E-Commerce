@@ -7,18 +7,25 @@ using MediatR;
 
 namespace Application.Fetaures.Baskets.Commands.Create;
 
-public class CreateBasketCommand : IRequest<CreatedBasketResponse>, ITransactionalRequest
+public record CreateBasketCommand(Guid? UserId) : IRequest<CreatedBasketResponse>, ITransactionalRequest
 {
-    public Guid? UserId { get; set; }
-    public string? GuestId { get; set; }
-
-    public class CreateBasketCommandHandler(IMapper mapper, IBasketRepository basketRepository) : IRequestHandler<CreateBasketCommand, CreatedBasketResponse>
+    public class CreateBasketCommandHandler(IMapper mapper, IBasketRepository basketRepository, BasketBusinessRules basketBusinessRules) : IRequestHandler<CreateBasketCommand, CreatedBasketResponse>
     {
         public async Task<CreatedBasketResponse> Handle(CreateBasketCommand request, CancellationToken cancellationToken)
         {
-            Basket basket = mapper.Map<Basket>(request);
+            var guestId = basketBusinessRules.IfUserIdIsNullGetOrCreateGuestId(request.UserId);
 
-            await basketRepository.AddAsync(basket);
+            var basket = await basketBusinessRules.GetOrCreateBasketAsync(request.UserId, guestId);
+            if (basket is null)
+            {
+                basket = new Basket
+                {
+                    UserId = request.UserId,
+                    GuestId = string.IsNullOrEmpty(guestId) ? null : guestId,
+                    IsActive = true,
+                };
+                await basketRepository.AddAsync(basket, cancellationToken);
+            }
 
             CreatedBasketResponse response = mapper.Map<CreatedBasketResponse>(basket);
             return response;

@@ -24,4 +24,21 @@ public class BasketBusinessRules(IBasketRepository basketRepository, IHttpContex
         );
         BasketShouldExistWhenSelected(basket);
     }
+    public void BasketShouldHaveItems(Basket basket)
+    {
+        if (basket.BasketItems is null || basket.BasketItems.Count == 0)
+            throw new BusinessException(BasketsBusinessMessages.BasketIsEmpty);
+    }
+
+    public async Task<Basket?> GetOrCreateBasketAsync(Guid? userId, string? guestId)
+    {
+        var basket = await basketRepository.GetAsync(x =>
+            x.IsActive && (
+                (userId.HasValue && x.UserId == userId) ||
+                (!string.IsNullOrWhiteSpace(guestId) && x.GuestId == guestId)
+            )
+        );
+        return basket;
+    }
+
 }

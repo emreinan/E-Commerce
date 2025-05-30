@@ -15,16 +15,16 @@ public class UpdateCategoryCommand : IRequest<UpdatedCategoryResponse>, ITransac
     public class UpdateCategoryCommandHandler(IMapper mapper, ICategoryRepository categoryRepository,
                                      CategoryBusinessRules categoryBusinessRules) : IRequestHandler<UpdateCategoryCommand, UpdatedCategoryResponse>
     {
-        public async Task<UpdatedCategoryResponse> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<UpdatedCategoryResponse> Handle(UpdateCategoryCommand command, CancellationToken cancellationToken)
         {
-            Category? category = await categoryRepository.GetAsync(predicate: c => c.Id == request.Id, cancellationToken: cancellationToken);
+            Category? category = await categoryRepository.GetAsync(predicate: c => c.Id == command.Id, cancellationToken: cancellationToken);
             categoryBusinessRules.CategoryShouldExistWhenSelected(category);
 
-            await categoryBusinessRules.CategoryNameBeUnique(request.Request.Name, cancellationToken);
+            await categoryBusinessRules.CategoryNameBeUnique(command.Request.Name.Trim(), cancellationToken);
 
-            category = mapper.Map(request.Request, category);
+            category = mapper.Map(command.Request, category);
 
-            await categoryRepository.UpdateAsync(category!, cancellationToken: cancellationToken);
+            await categoryRepository.UpdateAsync(category!, cancellationToken);
 
             UpdatedCategoryResponse response = mapper.Map<UpdatedCategoryResponse>(category);
             return response;

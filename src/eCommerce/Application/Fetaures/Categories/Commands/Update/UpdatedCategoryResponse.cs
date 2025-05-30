@@ -2,7 +2,7 @@ namespace Application.Fetaures.Categories.Commands.Update;
 
 public class UpdatedCategoryResponse 
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; } = default!;
-    public string Description { get; set; } = string.Empty;
+    public Guid Id { get; init; }
+    public string Name { get; init; } = default!;
+    public string Description { get; init; } = string.Empty;
 }

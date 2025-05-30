@@ -14,7 +14,6 @@ public class MappingProfiles : Profile
         CreateMap<CreateBasketCommand, Basket>();
         CreateMap<Basket, CreatedBasketResponse>();
 
-
         CreateMap<DeleteBasketCommand, Basket>();
 
         CreateMap<Basket, GetByIdBasketResponse>();

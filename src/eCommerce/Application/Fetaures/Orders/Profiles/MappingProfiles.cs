@@ -1,6 +1,4 @@
 using Application.Fetaures.Orders.Commands.Create;
-using Application.Fetaures.Orders.Commands.Delete;
-using Application.Fetaures.Orders.Commands.Update;
 using Application.Fetaures.Orders.Queries.GetById;
 using Application.Fetaures.Orders.Queries.GetList;
 using AutoMapper;
@@ -14,11 +12,6 @@ public class MappingProfiles : Profile
     {
         CreateMap<CreateOrderCommand, Order>();
         CreateMap<Order, CreatedOrderResponse>();
-
-        CreateMap<UpdateOrderCommand, Order>();
-        CreateMap<Order, UpdatedOrderResponse>();
-
-        CreateMap<DeleteOrderCommand, Order>();
 
         CreateMap<Order, GetByIdOrderResponse>();
 

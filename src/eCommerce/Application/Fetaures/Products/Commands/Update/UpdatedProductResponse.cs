@@ -2,12 +2,12 @@ namespace Application.Fetaures.Products.Commands.Update;
 
 public class UpdatedProductResponse 
 {
-    public Guid Id { get; set; }
-    public Guid SellerId { get; set; }
-    public Guid CategoryId { get; set; }
-    public string Name { get; set; } = default!;
-    public decimal Price { get; set; }
-    public string? Details { get; set; }
-    public int StockAmount { get; set; }
-    public bool Enabled { get; set; }
+    public Guid Id { get; init; }
+    public Guid StoreId { get; init; }
+    public Guid CategoryId { get; init; }
+    public string Name { get; init; } = default!;
+    public decimal Price { get; init; }
+    public string? Details { get; init; }
+    public int StockAmount { get; init; }
+    public bool Enabled { get; init; }
 }

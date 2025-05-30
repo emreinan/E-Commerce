@@ -6,7 +6,7 @@ namespace Core.CrossCuttingConcerns.Exceptions.Middleware;
 
 public class ExceptionMiddleware(RequestDelegate next)
 {
-    private readonly HttpExceptionHandler _httpExceptionHandler = new HttpExceptionHandler();
+    private readonly HttpExceptionHandler _httpExceptionHandler = new();
 
     public async Task Invoke(HttpContext context)
     {

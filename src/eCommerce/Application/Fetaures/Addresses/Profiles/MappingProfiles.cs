@@ -12,10 +12,15 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<CreateAddressCommand, Address>();
+        CreateMap<CreateAddressCommand, Address>()
+            .ForMember(dest => dest.GuestId, opt => opt.Ignore());
+
         CreateMap<Address, CreatedAddressResponse>();
 
-        CreateMap<UpdateAddressRequest, Address>();
+        CreateMap<UpdateAddressRequest, Address>()
+            .ForMember(dest => dest.UserId, opt => opt.Ignore())
+            .ForMember(dest => dest.GuestId, opt => opt.Ignore());
+
         CreateMap<Address, UpdatedAddressResponse>();
 
         CreateMap<DeleteAddressCommand, Address>();

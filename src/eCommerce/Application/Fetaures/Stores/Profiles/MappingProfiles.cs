@@ -12,10 +12,11 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<CreateStoreCommand, Store>();
+        CreateMap<CreateStoreCommand, Store>()
+            .ForMember(dest => dest.LogoUrl, opt => opt.Ignore());
         CreateMap<Store, CreatedStoreResponse>();
 
-        CreateMap<UpdateStoreCommand, Store>();
+        CreateMap<UpdateStoreRequest, Store>();
         CreateMap<Store, UpdatedStoreResponse>();
 
         CreateMap<DeleteStoreCommand, Store>();

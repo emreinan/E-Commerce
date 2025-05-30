@@ -9,7 +9,6 @@ public class User : Entity<Guid>
     public string LastName { get; set; } = default!;
     public byte[] PasswordSalt { get; set; } = default!;
     public byte[] PasswordHash { get; set; } = default!;
-    public string FullName => $"{FirstName} {LastName}";
     public string Email { get; set; } = default!;
     public string PhoneNumber { get; set; } = default!;
     public string? VerificationCode { get; set; }
@@ -21,7 +20,7 @@ public class User : Entity<Guid>
     public virtual ICollection<Address> Addresses { get; set; } = default!;
     public virtual ICollection<Order> Orders { get; set; } = default!;
     public virtual ICollection<ProductComment> ProductComments { get; set; } = default!;
-    public virtual Basket? Basket { get; set; }
+    public virtual ICollection<Basket> Baskets { get; set; } = default!;
     public PersonalInfo? PersonalInfo { get; set; }
 }
 

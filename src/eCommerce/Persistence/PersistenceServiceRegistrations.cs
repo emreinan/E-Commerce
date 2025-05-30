@@ -13,7 +13,11 @@ public static class PersistenceServiceRegistrations
     {
         services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            var connectionString = configuration.GetConnectionString("DefaultConnectionMssql");
+            if (string.IsNullOrEmpty(connectionString))
+                throw new InvalidOperationException("Connection string 'DefaultConnectionMssql' is not set in configuration.");
+
+            options.UseSqlServer(connectionString);
             //options.UseSqlite(configuration.GetConnectionString("Sqlite"));
         });
 

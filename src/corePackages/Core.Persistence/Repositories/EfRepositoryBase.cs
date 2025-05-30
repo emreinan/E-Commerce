@@ -2,14 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Persistence.Repositories;
 
@@ -97,7 +92,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>(TContext context)
     public async Task<ICollection<TEntity>> GetListAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         bool withDeleted = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
@@ -113,13 +108,13 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>(TContext context)
         if (predicate != null)
             queryable = queryable.Where(predicate);
         if (orderBy != null)
-            return await orderBy(queryable).ToListAsync();
-        return await queryable.ToListAsync();
+            return await orderBy(queryable).ToListAsync(cancellationToken: cancellationToken);
+        return await queryable.ToListAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<TEntity?> GetAsync(
         Expression<Func<TEntity, bool>> predicate,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         bool withDeleted = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
@@ -138,7 +133,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>(TContext context)
 
     public async Task<bool> AnyAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         bool withDeleted = false,
         CancellationToken cancellationToken = default
     )
@@ -201,7 +196,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>(TContext context)
 
     public TEntity? Get(
         Expression<Func<TEntity, bool>> predicate,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         bool withDeleted = false,
         bool enableTracking = true
     )
@@ -219,7 +214,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>(TContext context)
     public ICollection<TEntity> GetList(
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         bool withDeleted = false,
         bool enableTracking = true
     )
@@ -240,7 +235,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>(TContext context)
 
     public bool Any(
         Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         bool withDeleted = false
     )
     {
@@ -263,9 +258,9 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>(TContext context)
         {
             CheckHasEntityHaveOneToOneRelation(entity);
             if (isAsync)
-                await setEntityAsSoftDeleted(entity, isAsync, cancellationToken);
+                await SetEntityAsSoftDeleted(entity, isAsync, cancellationToken);
             else
-                setEntityAsSoftDeleted(entity, isAsync).Wait();
+                SetEntityAsSoftDeleted(entity, isAsync).Wait(cancellationToken);
         }
         else
             Context.Remove(entity);
@@ -313,103 +308,146 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>(TContext context)
         }
     }
 
-    protected virtual void EditEntityPropertiesToDelete(TEntity entity)
+    protected virtual bool IsSoftDeleted(object entity)
     {
-        entity.DeletedDate = DateTime.UtcNow;
+        var prop = entity.GetType().GetProperty("DeletedDate");
+        if (prop == null) return false;
+        var value = prop.GetValue(entity);
+        return value != null;
     }
 
-    protected virtual void EditRelationEntityPropertiesToCascadeSoftDelete(TEntity entity)
+    protected virtual void EditEntityPropertiesToDelete(object entity)
     {
-        entity.DeletedDate = DateTime.UtcNow;
+        var prop = entity.GetType().GetProperty("DeletedDate");
+        if (prop != null && prop.CanWrite)
+            prop.SetValue(entity, DateTime.UtcNow);
     }
 
-    protected virtual bool IsSoftDeleted(TEntity entity)
+    protected virtual void EditRelationEntityPropertiesToCascadeSoftDelete(object entity)
     {
-        return entity.DeletedDate.HasValue;
+        var prop = entity.GetType().GetProperty("DeletedDate");
+        if (prop != null && prop.CanWrite)
+            prop.SetValue(entity, DateTime.UtcNow);
     }
 
-    private async Task setEntityAsSoftDeleted(
-        TEntity entity,
-        bool isAsync = true,
-        CancellationToken cancellationToken = default,
-        bool isRoot = true
-    )
+
+    private async Task SetEntityAsSoftDeleted(
+     object entity,
+     bool isAsync = true,
+     CancellationToken cancellationToken = default,
+     bool isRoot = true
+ )
     {
+        ArgumentNullException.ThrowIfNull(entity);
+
         if (IsSoftDeleted(entity))
             return;
+
         if (isRoot)
-            EditEntityPropertiesToDelete((TEntity)entity);
+            EditEntityPropertiesToDelete(entity);
         else
             EditRelationEntityPropertiesToCascadeSoftDelete(entity);
 
-        var navigations = Context
-            .Entry(entity)
-            .Metadata.GetNavigations()
-            .Where(x =>
-                x is { IsOnDependent: false, ForeignKey.DeleteBehavior: DeleteBehavior.ClientCascade or DeleteBehavior.Cascade }
-            )
+        var entry = Context.Entry(entity);
+        var navigations = entry.Metadata.GetNavigations()
+            .Where(x => x is { IsOnDependent: false, ForeignKey.DeleteBehavior: DeleteBehavior.ClientCascade or DeleteBehavior.Cascade })
             .ToList();
-        foreach (INavigation? navigation in navigations)
+
+        foreach (var navigation in navigations)
         {
-            if (navigation.TargetEntityType.IsOwned())
-                continue;
-            if (navigation.PropertyInfo == null)
+            if (navigation.TargetEntityType.IsOwned() || navigation.PropertyInfo == null)
                 continue;
 
             object? navValue = navigation.PropertyInfo.GetValue(entity);
+
             if (navigation.IsCollection)
             {
                 if (navValue == null)
                 {
-                    IQueryable query = Context.Entry(entity).Collection(navigation.PropertyInfo.Name).Query();
+                    var elementType = navigation.TargetEntityType.ClrType;
+                    IQueryable query = entry.Collection(navigation.PropertyInfo.Name).Query();
 
                     if (isAsync)
                     {
-                        IQueryable<object>? relationLoaderQuery = GetRelationLoaderQuery(
-                            query,
-                            navigationPropertyType: navigation.PropertyInfo.GetType()
-                        );
-                        if (relationLoaderQuery is not null)
-                            navValue = await relationLoaderQuery.ToListAsync(cancellationToken);
+                        var toListAsyncMethod = ReflectionHelpers.GetGenericMethod(
+                            typeof(EntityFrameworkQueryableExtensions), "ToListAsync", 2, elementType);
+
+                        var task = (Task?)toListAsyncMethod.Invoke(null, [query, cancellationToken]);
+                        if (task == null)
+                            continue;
+
+                        await task.ConfigureAwait(false);
+                        navValue = ReflectionHelpers.GetTaskResult(task);
                     }
                     else
-                        navValue = GetRelationLoaderQuery(query, navigationPropertyType: navigation.PropertyInfo.GetType())
-                            ?.ToList();
+                    {
+                        var toListMethod = ReflectionHelpers.GetGenericMethod(typeof(Enumerable), "ToList", 1, elementType);
+                        navValue = toListMethod.Invoke(null, [query]);
+                    }
 
                     if (navValue == null)
                         continue;
                 }
 
-                foreach (object navValueItem in (IEnumerable)navValue)
-                    await setEntityAsSoftDeleted((TEntity)navValueItem, isAsync, cancellationToken, isRoot: false);
+                foreach (var navValueItem in (IEnumerable)navValue)
+                {
+                    if (navValueItem != null)
+                        await SetEntityAsSoftDeleted(navValueItem, isAsync, cancellationToken, isRoot: false);
+                }
             }
-            else
+            else // Reference navigation
             {
                 if (navValue == null)
                 {
-                    IQueryable query = Context.Entry(entity).Reference(navigation.PropertyInfo.Name).Query();
+                    var elementType = navigation.TargetEntityType.ClrType;
+                    IQueryable query = entry.Reference(navigation.PropertyInfo.Name).Query();
 
                     if (isAsync)
                     {
-                        IQueryable<object>? relationLoaderQuery = GetRelationLoaderQuery(
-                            query,
-                            navigationPropertyType: navigation.PropertyInfo.GetType()
-                        );
-                        if (relationLoaderQuery is not null)
-                            navValue = await relationLoaderQuery.FirstOrDefaultAsync(cancellationToken);
+                        var firstOrDefaultAsyncMethod = ReflectionHelpers.GetGenericMethod(
+                            typeof(EntityFrameworkQueryableExtensions), "FirstOrDefaultAsync", 2, elementType);
+
+                        var task = (Task?)firstOrDefaultAsyncMethod.Invoke(null, [query, cancellationToken]);
+                        if (task == null)
+                            continue;
+
+                        await task.ConfigureAwait(false);
+                        navValue = ReflectionHelpers.GetTaskResult(task);
                     }
                     else
-                        navValue = GetRelationLoaderQuery(query, navigationPropertyType: navigation.PropertyInfo.GetType())
-                            ?.FirstOrDefault();
+                    {
+                        var firstOrDefaultMethod = ReflectionHelpers.GetGenericMethod(typeof(Queryable), "FirstOrDefault", 1, elementType);
+                        navValue = firstOrDefaultMethod.Invoke(null, [query]);
+                    }
 
                     if (navValue == null)
                         continue;
                 }
 
-                await setEntityAsSoftDeleted((TEntity)navValue, isAsync, cancellationToken, isRoot: false);
+                await SetEntityAsSoftDeleted(navValue, isAsync, cancellationToken, isRoot: false);
             }
         }
 
         Context.Update(entity);
     }
+
+    public static class ReflectionHelpers
+    {
+        public static MethodInfo GetGenericMethod(Type type, string name, int paramCount, Type genericArg)
+        {
+            var method = type.GetMethods()
+                .FirstOrDefault(m => m.Name == name && m.GetParameters().Length == paramCount);
+            return method == null
+                ? throw new InvalidOperationException($"{name} method not found on {type.Name}.")
+                : method.MakeGenericMethod(genericArg);
+        }
+
+        public static object? GetTaskResult(Task task)
+        {
+            var resultProperty = task.GetType().GetProperty("Result");
+            return resultProperty?.GetValue(task);
+        }
+    }
+
+
 }

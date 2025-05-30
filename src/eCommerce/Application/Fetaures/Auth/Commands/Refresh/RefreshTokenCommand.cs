@@ -28,7 +28,7 @@ public partial class RefreshTokenCommand : IRequest<RefreshedTokenResponse>
             authBusinessRules.IpAddressShouldMatch(refreshToken!, request.IpAddress);
 
             //4. check if user exists
-            var user = await userRepository.GetAsync(u => u.Id == refreshToken!.UserId);
+            var user = await userRepository.GetAsync(u => u.Id == refreshToken!.UserId, cancellationToken: cancellationToken);
             authBusinessRules.UserShouldExist(user);
 
             await authService.DeleteOldRefreshTokens(user!.Id);

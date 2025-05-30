@@ -5,7 +5,8 @@ namespace Application.Fetaures.Orders.Queries.GetById;
 public class GetByIdOrderResponse 
 {
     public Guid Id { get; set; }
-    public Guid UserId { get; set; }
+    public Guid? UserId { get; set; }
+    public string? GuestId { get; init; }
     public Guid ShippingAddressId { get; set; }
     public Guid? DiscountId { get; set; }
     public string OrderCode { get; set; } = default!;

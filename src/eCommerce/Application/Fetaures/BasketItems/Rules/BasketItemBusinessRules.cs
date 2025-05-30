@@ -1,12 +1,9 @@
+using Application.Fetaures.BasketItems.Constants;
 using Application.Services.Repositories;
 using Core.Application.Rules;
-using Domain.Entities;
-using Application.Fetaures.BasketItems.Constants;
 using Core.CrossCuttingConcerns.Exceptions.Types;
-using MediatR;
+using Domain.Entities;
 using Microsoft.AspNetCore.Http;
-using Application.Fetaures.BasketItems.Commands.Create;
-using AutoMapper;
 
 namespace Application.Fetaures.BasketItems.Rules;
 
@@ -39,6 +36,7 @@ public class BasketItemBusinessRules(IBasketItemRepository basketItemRepository,
         if (product.StockAmount < requestedQuantity)
             throw new BusinessException("Insufficient stock for the product.");
     }
+
     public async Task<Basket> GetOrCreateBasketAsync(Guid? userId, string? guestId, CancellationToken cancellationToken)
     {
         Basket? basket = await basketRepository.GetAsync(

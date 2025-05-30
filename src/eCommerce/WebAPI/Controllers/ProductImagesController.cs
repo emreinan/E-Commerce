@@ -12,14 +12,14 @@ namespace WebAPI.Controllers;
 public class ProductImagesController : BaseController
 {
     [HttpPost]
-    public async Task<IActionResult> Add([FromBody] CreateProductImageCommand command)
+    public async Task<IActionResult> Add([FromForm] CreateProductImageCommand command)
     {
-        CreatedProductImageResponse response = await Mediator.Send(command);
-        return CreatedAtAction(nameof(GetById), new { response.Id }, response);
+        List<CreatedProductImageResponse> response = await Mediator.Send(command);
+        return CreatedAtAction(nameof(GetList), response);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateProductImageRequest request)
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromForm] UpdateProductImageRequest request)
     {
         UpdatedProductImageResponse response = await Mediator.Send(new UpdateProductImageCommand { Id = id, Request = request });
         return Ok(response);

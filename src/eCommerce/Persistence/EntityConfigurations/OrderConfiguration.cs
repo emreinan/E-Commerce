@@ -23,13 +23,9 @@ public class OrderConfiguration : BaseEntityConfiguration<Order, Guid>
         builder.Property(o => o.Status).IsRequired();
         builder.Property(o => o.PaymentMethod).IsRequired();
 
-        builder.HasOne(x => x.User)
-               .WithMany(x => x.Orders)
-               .HasForeignKey(x => x.UserId);
-
         builder.HasOne(x => x.ShippingAddress)
                .WithMany()
-               .HasForeignKey(x => x.ShippingAddressId);
+               .HasForeignKey(x => x.ShippingAddressId).OnDelete(DeleteBehavior.NoAction);
 
         builder.HasMany(o => o.OrderItems)
                .WithOne(oi => oi.Order)
@@ -37,6 +33,6 @@ public class OrderConfiguration : BaseEntityConfiguration<Order, Guid>
 
         builder.HasOne(x => x.Discount)
                .WithMany()
-               .HasForeignKey(x => x.DiscountId);
+               .HasForeignKey(x => x.DiscountId).OnDelete(DeleteBehavior.NoAction);
     }
 }

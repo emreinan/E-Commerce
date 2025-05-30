@@ -5,9 +5,11 @@ namespace Application.Services.File;
 public class FileUploadResponse
 {
     public Guid Id { get; set; }
+    public string Url { get; set; } = string.Empty;
 }
+
 public interface IFileService
 {
-    Task<Guid> UploadFileAsync(IFormFile file);
+    Task<FileUploadResponse> UploadFileAsync(IFormFile file);
     Task<Stream> GetFileAsync(Guid id);
 }

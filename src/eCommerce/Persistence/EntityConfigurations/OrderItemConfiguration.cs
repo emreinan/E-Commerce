@@ -21,6 +21,6 @@ public class OrderItemConfiguration : BaseEntityConfiguration<OrderItem, Guid>
 
         builder.HasOne(oi => oi.Order)
             .WithMany(o => o.OrderItems)
-            .HasForeignKey(oi => oi.OrderId);
+            .HasForeignKey(oi => oi.OrderId).OnDelete(DeleteBehavior.NoAction);
     }
 }

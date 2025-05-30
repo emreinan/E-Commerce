@@ -6,10 +6,8 @@ using MediatR;
 
 namespace Application.Fetaures.BasketItems.Commands.Delete;
 
-public class DeleteBasketItemCommand : IRequest, ITransactionalRequest
+public record DeleteBasketItemCommand(Guid Id) : IRequest, ITransactionalRequest
 {
-    public Guid Id { get; set; }
-
     public class DeleteBasketItemCommandHandler(IBasketItemRepository basketItemRepository,
                                      BasketItemBusinessRules basketItemBusinessRules) : IRequestHandler<DeleteBasketItemCommand>
     {

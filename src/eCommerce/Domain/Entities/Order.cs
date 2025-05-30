@@ -25,7 +25,6 @@ public class Order : Entity<Guid>
     public bool IsPaid { get; set; } = false;
 
     public virtual Discount? Discount { get; set; }
-    public virtual User? User { get; set; }
     public virtual Address ShippingAddress { get; set; } = default!;
     public virtual ICollection<OrderItem> OrderItems { get; set; } = default!;
 }

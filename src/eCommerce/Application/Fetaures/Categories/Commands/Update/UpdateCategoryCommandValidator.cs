@@ -6,8 +6,12 @@ public class UpdateCategoryCommandValidator : AbstractValidator<UpdateCategoryRe
 {
     public UpdateCategoryCommandValidator()
     {
-        RuleFor(c => c.Id).NotEmpty();
-        RuleFor(c => c.Name).NotEmpty().MaximumLength(100);
+        RuleFor(c => c.Name)
+           .NotEmpty()
+           .MaximumLength(100)
+           .Matches("^[a-zA-ZçÇðÐýÝöÖþÞüÜ\\-\\s]*$")
+           .WithMessage("Kategori adý yalnýzca harf (Türkçe dahil), boþluk ve tire içerebilir.");
+
         RuleFor(c => c.Description).MaximumLength(200);
     }
 }

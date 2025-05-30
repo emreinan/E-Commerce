@@ -1,3 +1,4 @@
+using Application.Fetaures.ProductComments.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Transaction;
@@ -6,23 +7,29 @@ using MediatR;
 
 namespace Application.Fetaures.ProductComments.Commands.Create;
 
-public class CreateProductCommentCommand : IRequest<CreatedProductCommentResponse>, ITransactionalRequest
+public record CreateProductCommentCommand(
+    Guid ProductId, 
+    Guid UserId, 
+    string Text, 
+    byte StarCount)
+    : IRequest<CreatedProductCommentResponse>, ITransactionalRequest
 {
-    public  Guid ProductId { get; set; }
-    public  Guid UserId { get; set; }
-    public string Text { get; set; } = default!;
-    public byte StarCount { get; set; }
-
-    public class CreateProductCommentCommandHandler(IMapper mapper, IProductCommentRepository productCommentRepository) : IRequestHandler<CreateProductCommentCommand, CreatedProductCommentResponse>
+    public class CreateProductCommentCommandHandler(
+    IMapper mapper,
+    IProductCommentRepository productCommentRepository,
+    ProductCommentBusinessRules businessRules)
+    : IRequestHandler<CreateProductCommentCommand, CreatedProductCommentResponse>
     {
         public async Task<CreatedProductCommentResponse> Handle(CreateProductCommentCommand request, CancellationToken cancellationToken)
         {
+            await businessRules.EnsureProductExists(request.ProductId, cancellationToken);
+            await businessRules.EnsureUserExists(request.UserId, cancellationToken);
+            await businessRules.EnsureUserPurchasedProduct(request.UserId, request.ProductId, cancellationToken);
+
             ProductComment productComment = mapper.Map<ProductComment>(request);
+            await productCommentRepository.AddAsync(productComment, cancellationToken);
 
-            await productCommentRepository.AddAsync(productComment);
-
-            CreatedProductCommentResponse response = mapper.Map<CreatedProductCommentResponse>(productComment);
-            return response;
+            return mapper.Map<CreatedProductCommentResponse>(productComment);
         }
     }
 }

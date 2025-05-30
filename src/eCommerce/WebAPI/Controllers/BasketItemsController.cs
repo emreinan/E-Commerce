@@ -18,7 +18,7 @@ public class BasketItemsController : BaseController
         return CreatedAtAction(nameof(GetById), new { response.Id }, response);
     }
 
-    [HttpPut]
+    [HttpPut("{id}")]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateBasketItemRequest request)
     {
         UpdatedBasketItemResponse response = await Mediator.Send(new UpdateBasketItemCommand { Id = id, Request=request });
@@ -28,7 +28,7 @@ public class BasketItemsController : BaseController
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        await Mediator.Send(new DeleteBasketItemCommand { Id = id });
+        await Mediator.Send(new DeleteBasketItemCommand(id));
         return NoContent();
     }
 

@@ -19,12 +19,22 @@ public class AuthService(IConfiguration configuration, IRefreshTokenRepository r
 
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.FirstName),
-            new Claim(ClaimTypes.Surname, user.LastName),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.MobilePhone, user.PhoneNumber)
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Name, user.FirstName),
+            new(ClaimTypes.Surname, user.LastName),
+            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.MobilePhone, user.PhoneNumber),
         };
+
+        if (user.UserRoles is not null)
+        {
+            claims.AddRange(
+                user.UserRoles
+                    .Where(ur => ur.Role is not null)
+                    .Select(ur => new Claim(ClaimTypes.Role, ur.Role.Name))
+            );
+        }
+
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenOptions.SecurityKey));
         var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

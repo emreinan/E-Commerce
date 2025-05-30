@@ -1,25 +1,23 @@
 ﻿using Application.Services.File;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace Infrastructure.Services.File;
 
-public class FileApiAdapter(HttpClient httpClient, IConfiguration configuration) : IFileService
+public class FileApiAdapter(IHttpClientFactory httpClientFactory) : IFileService
 {
-    private readonly string fileApiUrl = configuration["FileApiUrl"] ??
-        throw new InvalidOperationException("FileApiUrl can not be found in confifuration");
+    private readonly HttpClient httpClient = httpClientFactory.CreateClient("FileApiClient");
 
     public async Task<Stream> GetFileAsync(Guid id)
     {
-        var response = await httpClient.GetAsync($"{fileApiUrl}/api/File/Download/{id}");
+        var response = await httpClient.GetAsync($"/api/File/Download/{id}");
         response.EnsureSuccessStatusCode();
 
         return await response.Content.ReadAsStreamAsync();
     }
 
-    public async Task<Guid> UploadFileAsync(IFormFile file)
+    public async Task<FileUploadResponse> UploadFileAsync(IFormFile file)
     {
         using var content = new MultipartFormDataContent();
         using var fileStream = file.OpenReadStream();
@@ -32,7 +30,7 @@ public class FileApiAdapter(HttpClient httpClient, IConfiguration configuration)
         };
         content.Add(streamContent);
 
-        var response = await httpClient.PostAsync($"{fileApiUrl}/api/File/Upload", content);
+        var response = await httpClient.PostAsync($"/api/File/Upload", content);
 
         response.EnsureSuccessStatusCode();
 
@@ -43,7 +41,7 @@ public class FileApiAdapter(HttpClient httpClient, IConfiguration configuration)
                 PropertyNameCaseInsensitive = true //Pascal case to camel case
             });
 
-        return fileResult!.Id;
+        return fileResult!;
 
     }
 }

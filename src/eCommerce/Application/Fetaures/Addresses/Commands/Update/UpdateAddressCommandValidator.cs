@@ -7,7 +7,9 @@ public class UpdateAddressCommandValidator : AbstractValidator<UpdateAddressRequ
     public UpdateAddressCommandValidator()
     {
         RuleFor(c => c.AddressTitle).NotEmpty().MaximumLength(50);
-        RuleFor(c => c.FullName).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.FullName)
+            .NotEmpty().WithMessage("Full name is required for guests.")
+            .When(x => x.UserId == null);
         RuleFor(c => c.Street).NotEmpty().MaximumLength(200);
         RuleFor(c => c.City).NotEmpty().MaximumLength(100);
         RuleFor(c => c.District).NotEmpty().MaximumLength(100);
@@ -15,8 +17,5 @@ public class UpdateAddressCommandValidator : AbstractValidator<UpdateAddressRequ
         RuleFor(c => c.PhoneNumber).NotEmpty().MaximumLength(20);
         RuleFor(c => c.AddressDetail).NotEmpty().MaximumLength(500);
 
-        RuleFor(c => c)
-            .Must(c => c.UserId.HasValue || !string.IsNullOrEmpty(c.GuestId))
-            .WithMessage("UserId veya GuestId'den en az biri belirtilmelidir.");
     }
 }
